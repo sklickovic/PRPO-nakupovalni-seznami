@@ -1,6 +1,6 @@
-package si.fri.prpo.nakupovalniseznmi.zrno;
+package si.fri.prpo.nakupovalniseznami.zrno;
 
-import si.fri.prpo.nakupovalniseznmi.entitete.Uporabnik;
+import si.fri.prpo.nakupovalniseznami.entitete.Uporabnik;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.persistence.*;
@@ -13,8 +13,8 @@ public class UporabnikZrno {
 
     public List<Uporabnik> getUporabniki() {
 
-        // implementacija
+        List<Uporabnik> uporabniki = em.createNamedQuery("Uporabnik.getAll").getResultList();
 
-        return null;
+        return uporabniki;
     }
 }

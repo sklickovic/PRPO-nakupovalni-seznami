@@ -1,4 +1,4 @@
-package si.fri.prpo.nakupovalniseznmi.entitete;
+package si.fri.prpo.nakupovalniseznami.entitete;
 
 import javax.persistence.*;
 import java.util.List;

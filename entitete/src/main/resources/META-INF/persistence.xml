@@ -3,10 +3,10 @@
     <persistence-unit name="nakupovalni-seznami-jpa" transaction-type="JTA">
         <jta-data-source>jdbc-seznami</jta-data-source>
 
-        <class>si.fri.prpo.nakupovalniseznmi.entitete.Uporabnik</class>
-        <class>si.fri.prpo.nakupovalniseznmi.entitete.Izdelki</class>
-        <class>si.fri.prpo.nakupovalniseznmi.entitete.Kategorija</class>
-        <class>si.fri.prpo.nakupovalniseznmi.entitete.WishList</class>
+        <class>si.fri.prpo.nakupovalniseznami.entitete.Uporabnik</class>
+        <class>si.fri.prpo.nakupovalniseznami.entitete.Izdelki</class>
+        <class>si.fri.prpo.nakupovalniseznami.entitete.Kategorija</class>
+        <class>si.fri.prpo.nakupovalniseznami.entitete.WishList</class>
 
         <properties>
             <property name="javax.persistence.schema-generation.database.action" value="drop-and-create"/>
