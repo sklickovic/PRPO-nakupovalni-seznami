@@ -1,6 +1,6 @@
-INSERT INTO uporabnik (ime, priimek, uporabnisko_ime, email) VALUES ('Petra', 'Kos', 'petrakos', 'petra.kos@hotmail.com');
-INSERT INTO uporabnik (ime, priimek, uporabnisko_ime, email) VALUES ('Miha', 'Novak', 'mihanovak', 'miha.novak@gmail.com');
-INSERT INTO lokacija (geografska_sirina, geografska_dolzina, radij) VALUES (46.050380, 14.468966, 500.0);
-INSERT INTO lokacija (geografska_sirina, geografska_dolzina, radij) VALUES (46.056195, 14.506057, 500.0);
-INSERT INTO opomnik (naslov, opis, lokacija_id, uporabnik_id, storitev_id) VALUES ('Obišči referat', 'V referatu dvigni potrdila o vpisu.', 1, 1, null);
-INSERT INTO opomnik (naslov, opis, lokacija_id, uporabnik_id, storitev_id) VALUES ('LPP', 'Podaljšaj karto za LPP.', 2, 2, null);
+INSERT INTO uporabnik (ime, priimek, uporabnisko_ime, email, naslov) VALUES ('Petra', 'Kos', 'petrakos', 'petra.kos@hotmail.com', 'Celovska cesta 20');
+INSERT INTO uporabnik (ime, priimek, uporabnisko_ime, email, naslov) VALUES ('Miha', 'Novak', 'mihanovak', 'miha.novak@gmail.com', 'Dunajska 155');
+INSERT INTO izdelki (cena, nazivIzdelka, zalogaIzdelka) VALUES (45, 'Likalnik', 5);
+INSERT INTO izdelki (cena, nazivIzdelka, zalogaIzdelka) VALUES (3, 'Sladoled', 50);
+INSERT INTO kategorije (nazivKategorije) VALUES ('Tehnika');
+INSERT INTO kategorije (nazivKategorije) VALUES ('Prehrana');

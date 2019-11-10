@@ -1,3 +1,5 @@
+package si.fri.prpo.nakupovalniseznmi.zrno;
+
 import si.fri.prpo.nakupovalniseznmi.entitete.Uporabnik;
 
 import javax.enterprise.context.ApplicationScoped;
