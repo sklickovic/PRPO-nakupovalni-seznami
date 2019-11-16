@@ -1,5 +1,6 @@
 package si.fri.prpo.nakupovalniseznami.zrno;
 
+<<<<<<< HEAD
 import si.fri.prpo.nakupovalniseznami.entitete.Izdelki;
 
 import javax.annotation.PostConstruct;
@@ -9,10 +10,14 @@ import javax.persistence.*;
 import javax.transaction.Transactional;
 import java.util.List;
 import java.util.logging.Logger;
+=======
+import javax.enterprise.context.ApplicationScoped;
+>>>>>>> 4c9d90f1c5e832930c6f44b8c1c28ed2f8cce9ab
 
 @ApplicationScoped
 public class IzdelkiZrno {
 
+<<<<<<< HEAD
     @PersistenceContext(unitName = "nakupovalni-seznami-jpa")
 
     private EntityManager em;
@@ -71,8 +76,4 @@ public class IzdelkiZrno {
 
         return id;
     }
-
-
-
-
 }

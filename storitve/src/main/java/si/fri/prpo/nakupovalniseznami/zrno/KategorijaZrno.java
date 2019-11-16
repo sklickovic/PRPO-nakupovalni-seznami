@@ -1,5 +1,6 @@
 package si.fri.prpo.nakupovalniseznami.zrno;
 
+<<<<<<< HEAD
 import si.fri.prpo.nakupovalniseznami.entitete.Kategorija;
 
 import javax.annotation.PostConstruct;
