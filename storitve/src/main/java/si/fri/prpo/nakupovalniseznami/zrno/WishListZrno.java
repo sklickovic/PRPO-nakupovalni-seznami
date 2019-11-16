@@ -1,6 +1,5 @@
 package si.fri.prpo.nakupovalniseznami.zrno;
 
-<<<<<<< HEAD
 import si.fri.prpo.nakupovalniseznami.entitete.WishList;
 
 import javax.annotation.PostConstruct;
