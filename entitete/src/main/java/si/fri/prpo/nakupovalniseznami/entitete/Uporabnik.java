@@ -7,7 +7,10 @@ import java.util.List;
 @Table(name = "uporabnik")
 @NamedQueries(value =
         {
-                @NamedQuery(name = "Uporabnik.getAll", query = "SELECT u FROM Uporabnik u")
+                @NamedQuery(name = "Uporabnik.getAll", query = "SELECT u FROM Uporabnik u"),
+                @NamedQuery(name = "Uporabnik.getPetras", query = "SELECT u FROM Uporabnik u WHERE u.ime = 'Petra'"),
+                @NamedQuery(name = "Uporabnik.getNovaks", query = "SELECT u FROM Uporabnik u WHERE u.priimek = 'Novak'"),
+                @NamedQuery(name = "Uporabnik.getFirstUserId", query = "SELECT MIN(u.id) FROM Uporabnik u")
         })
 public class Uporabnik {
 

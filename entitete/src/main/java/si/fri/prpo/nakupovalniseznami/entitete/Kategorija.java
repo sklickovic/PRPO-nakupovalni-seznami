@@ -7,7 +7,10 @@ import java.util.List;
 @Table(name = "kategorije")
 @NamedQueries(value =
         {
-                @NamedQuery(name = "Kategorija.getAll", query = "SELECT k FROM Kategorija k")
+                @NamedQuery(name = "Kategorija.getAll", query = "SELECT k FROM Kategorija k"),
+                @NamedQuery(name = "Kategorija.getTehnika", query = "SELECT k FROM Kategorija k WHERE k.nazivKategorije LIKE '%Teh%'"),
+                @NamedQuery(name = "Kategorija.getFirst", query = "SELECT k FROM Kategorija k WHERE k.idKategorije = 1"),
+                @NamedQuery(name = "Kategorija.getFood", query = "SELECT k FROM Kategorija k WHERE k.nazivKategorije LIKE '%hrana%'")
         })
 public class Kategorija {
     @Id

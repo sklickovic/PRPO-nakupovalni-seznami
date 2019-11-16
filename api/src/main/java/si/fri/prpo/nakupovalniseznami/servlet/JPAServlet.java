@@ -31,5 +31,9 @@ public class JPAServlet extends HttpServlet {
         uporabnikiZrno.getUporabniki().stream().forEach(u -> pw.append("<strong>IME:</strong> " + u.getIme() + " <strong>PRIIMEK:</strong> " + u.getPriimek()
                 + " <strong>EMAIL:</strong> " + u.getEmail() + " <strong>NASLOV:</strong> " + u.getNaslov() + " <strong>UPORABNISKO IME:</strong> " + u.getUporabniskoIme() +  "<br/>"));
 
+
+        pw.append("<br/>");
+        uporabnikiZrno.getPetras().stream().forEach(u -> pw.append("<strong>IME:</strong> " + u.getIme() + " <strong>PRIIMEK:</strong> " + u.getPriimek() + "<br/>"));
+
     }
 }
