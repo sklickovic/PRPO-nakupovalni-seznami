@@ -52,4 +52,20 @@ public class WishList {
         this.zaloga = zaloga;
     }
 
+    public Uporabnik getUporabnik() {
+        return this.uporabnik;
+    }
+
+    public void setUporabnik(Uporabnik u) {
+        this.uporabnik = u;
+    }
+
+    public List<Izdelki> getList() {
+        return this.izdelkiList;
+    }
+
+    public void setList(List<Izdelki> list) {
+        this.izdelkiList = list;
+    }
+
 }

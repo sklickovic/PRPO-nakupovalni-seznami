@@ -4,11 +4,13 @@ import si.fri.prpo.nakupovalniseznami.entitete.WishList;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
+import javax.enterprise.context.ApplicationScoped;
 import javax.persistence.*;
 import javax.transaction.Transactional;
 import java.util.List;
 import java.util.logging.Logger;
 
+@ApplicationScoped
 public class WishListZrno {
 
     @PersistenceContext(unitName = "nakupovalni-seznami-jpa")
