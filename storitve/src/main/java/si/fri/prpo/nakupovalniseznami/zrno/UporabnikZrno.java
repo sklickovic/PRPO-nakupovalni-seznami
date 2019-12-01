@@ -59,11 +59,13 @@ public class UporabnikZrno {
     }
 
     @Transactional
-    public void posodobiUporabnika(int id, Uporabnik uporabnik) {
+    public Uporabnik posodobiUporabnika(int id, Uporabnik uporabnik) {
         Uporabnik user = em.find(Uporabnik.class, id);
 
         user.setId(user.getId());
         em.merge(uporabnik);
+
+        return uporabnik;
     }
 
     @Transactional

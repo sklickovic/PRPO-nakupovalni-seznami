@@ -58,11 +58,13 @@ public class WishListZrno {
     }
 
     @Transactional
-    public void posodobiWishList(int id, WishList wl) {
+    public WishList posodobiWishList(int id, WishList wl) {
         WishList wl2 = em.find(WishList.class, id);
 
         wl.setIdWishListe(wl2.getIdWishListe());
         em.merge(wl);
+
+        return wl;
     }
 
     @Transactional

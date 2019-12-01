@@ -5,11 +5,13 @@ import si.fri.prpo.nakupovalniseznami.entitete.Kategorija;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
+import javax.enterprise.context.ApplicationScoped;
 import javax.persistence.*;
 import javax.transaction.Transactional;
 import java.util.List;
 import java.util.logging.Logger;
 
+@ApplicationScoped
 public class KategorijaZrno {
 
     @PersistenceContext(unitName = "nakupovalni-seznami-jpa")
@@ -51,11 +53,12 @@ public class KategorijaZrno {
     }
 
     @Transactional
-    public void posodobiKategorijo(int id, Kategorija kat) {
+    public Kategorija posodobiKategorijo(int id, Kategorija kat) {
         Kategorija kat1 = em.find(Kategorija.class, id);
 
         kat.setIdKategorije(kat1.getIdKategorije());
         em.merge(kat);
+        return kat;
     }
 
     @Transactional

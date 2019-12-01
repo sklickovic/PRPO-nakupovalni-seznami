@@ -1,4 +1,4 @@
-package si.fri.prpo.nakupovalniseznami.servlet;
+package si.fri.prpo.nakupovalniseznami.servlets;
 
 import si.fri.prpo.nakupovalniseznami.entitete.Uporabnik;
 import si.fri.prpo.nakupovalniseznami.zrno.UporabnikZrno;
