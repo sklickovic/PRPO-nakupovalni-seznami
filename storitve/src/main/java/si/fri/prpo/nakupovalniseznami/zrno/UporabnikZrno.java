@@ -29,11 +29,9 @@ public class UporabnikZrno {
         log.info("Uničenje zrna: " + UporabnikZrno.class.getSimpleName());
     }
 
-    public List<Uporabnik> getUporabniki() {
+    public List<Uporabnik> getUporabniki(QueryParameters query) {
 
-        List<Uporabnik> uporabniki = em.createNamedQuery("Uporabnik.getAll").getResultList();
-
-        return uporabniki;
+        return JPAUtils.queryEntities(em, Uporabnik.class, query);
     }
 
     public List<Uporabnik> getPetras() {

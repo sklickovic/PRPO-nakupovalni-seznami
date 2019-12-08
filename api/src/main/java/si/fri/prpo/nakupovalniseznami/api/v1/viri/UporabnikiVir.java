@@ -7,9 +7,7 @@ import si.fri.prpo.nakupovalniseznami.zrno.UporabnikZrno;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.ws.rs.*;
-import javax.ws.rs.core.Application;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
+import javax.ws.rs.core.*;
 
 @ApplicationScoped
 @Path("uporabniki")
@@ -17,6 +15,9 @@ import javax.ws.rs.core.Response;
 @Produces(MediaType.APPLICATION_JSON)
 public class UporabnikiVir extends Application {
 
+
+    @Context
+    protected UriInfo uriInfo;
 
     @Inject
     private UporabnikZrno uporabnikZrno;
