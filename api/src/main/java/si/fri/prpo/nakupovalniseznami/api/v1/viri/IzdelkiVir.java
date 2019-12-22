@@ -22,6 +22,7 @@ public class IzdelkiVir extends Application {
     private IzdelkiZrno izdelkiZrno;
 
     @GET
+    @Path("{id}")
     public Response pridobiIzdelek(@PathParam("id") Integer id) {
         return Response.ok(izdelkiZrno.pridobiIzdelek(id)).build();
     }
