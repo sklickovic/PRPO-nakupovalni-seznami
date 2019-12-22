@@ -20,7 +20,6 @@ public class BelezenjeKlicevInterceptor {
     @AroundInvoke
     public Object stejKlice(InvocationContext context) throws Exception {
         belezenjeKlicevZrno.klic();
-        Object res = context.proceed();
-        return res;
+        return context.proceed();
     }
 }

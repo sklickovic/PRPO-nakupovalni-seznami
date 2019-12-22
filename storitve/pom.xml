@@ -21,6 +21,11 @@
             <artifactId>kumuluzee-jta-narayana</artifactId>
         </dependency>
         <dependency>
+            <groupId>com.kumuluz.ee</groupId>
+            <artifactId>kumuluzee-json-b-yasson</artifactId>
+        </dependency>
+
+        <dependency>
             <groupId>si.fri.prpo.nakupovalniseznami</groupId>
             <artifactId>entitete</artifactId>
         </dependency>
@@ -28,7 +33,12 @@
             <groupId>com.kumuluz.ee.rest</groupId>
             <artifactId>kumuluzee-rest-core</artifactId>
             <version>1.2.3</version>
-</dependency>
+        </dependency>
+        <dependency>
+            <groupId>javax.ws.rs</groupId>
+            <artifactId>javax.ws.rs-api</artifactId>
+            <version>RELEASE</version>
+        </dependency>
     </dependencies>
 
 </project>

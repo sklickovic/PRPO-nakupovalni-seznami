@@ -2,6 +2,7 @@ package si.fri.prpo.nakupovalniseznami.zrno;
 
 import com.kumuluz.ee.rest.beans.QueryParameters;
 import com.kumuluz.ee.rest.utils.JPAUtils;
+import si.fri.prpo.nakupovalniseznami.anotacije.BeleziKlice;
 import si.fri.prpo.nakupovalniseznami.entitete.Uporabnik;
 
 import javax.annotation.PostConstruct;
@@ -10,11 +11,13 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Default;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
 import javax.transaction.Transactional;
 import java.util.List;
 import java.util.logging.Logger;
 
 @ApplicationScoped
+@BeleziKlice
 public class UporabnikZrno {
 
     @PersistenceContext(unitName = "nakupovalni-seznami-jpa")
@@ -41,25 +44,33 @@ public class UporabnikZrno {
 
     @Default
     public List<Uporabnik> getUporabniki() {
-
-        return (List<Uporabnik>) em.createNamedQuery("Uporabnik.getAll").getResultList();
+        Query q = em.createNamedQuery("Uporabnik.getAll");
+        List<Uporabnik> usrs =(List<Uporabnik>)(q.getResultList());
+        return usrs;
     }
 
+    @Default
     public List<Uporabnik> getPetras() {
-
-        return (List<Uporabnik>) em.createNamedQuery("Uporabnik.getPetras").getResultList();
+        List<Uporabnik> petras = em.createNamedQuery("Uporabnik.getPetras").getResultList();
+        return petras;
     }
 
     @Transactional
     public Uporabnik pridobiUporabnika(int id) {
-
-        return em.find(Uporabnik.class, id);
+        Uporabnik u = em.find(Uporabnik.class, id);
+        if(u == null){
+            log.info("User not found!");
+            return null;
+        }else{
+            return u;
+        }
     }
 
     @Transactional
     public Uporabnik dodajUporabnika(Uporabnik u) {
         if (u != null) {
             em.persist(u);
+            log.info("User added with id: " + u.getId());
         }
 
         return u;
@@ -68,10 +79,14 @@ public class UporabnikZrno {
     @Transactional
     public Uporabnik posodobiUporabnika(int id, Uporabnik uporabnik) {
         Uporabnik user = em.find(Uporabnik.class, id);
-
-        user.setId(user.getId());
-        em.merge(uporabnik);
-
+        if(user == null){
+            log.info("User not found!");
+        }
+        else {
+            user.setId(user.getId());
+            em.merge(uporabnik);
+            log.info("Updating successfully.");
+        }
         return uporabnik;
     }
 
@@ -81,6 +96,10 @@ public class UporabnikZrno {
 
         if (user != null) {
             em.remove(user);
+            log.info("User with id " + id + " successfully deleted.");
+        }
+        else {
+            log.warning("User not found!");
         }
 
         return id;

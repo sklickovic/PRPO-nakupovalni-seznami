@@ -24,6 +24,10 @@
             <groupId>si.fri.prpo.nakupovalniseznami</groupId>
             <artifactId>storitve</artifactId>
         </dependency>
+        <dependency>
+            <groupId>com.kumuluz.ee</groupId>
+            <artifactId>kumuluzee-json-p-jsonp</artifactId>
+        </dependency>
     </dependencies>
     <build>
         <plugins>

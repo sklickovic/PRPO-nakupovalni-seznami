@@ -27,13 +27,12 @@ public class JPAServlet extends HttpServlet {
 
         PrintWriter pw = resp.getWriter();
 
-        pw.append("Uporabniki:<br/>");
-        uporabnikiZrno.getUporabniki().stream().forEach(u -> pw.append("<strong>IME:</strong> " + u.getIme() + " <strong>PRIIMEK:</strong> " + u.getPriimek()
-                + " <strong>EMAIL:</strong> " + u.getEmail() + " <strong>NASLOV:</strong> " + u.getNaslov() + " <strong>UPORABNISKO IME:</strong> " + u.getUporabniskoIme() +  "<br/>"));
+        pw.append("Izpis vseh uporabnikov:<br/>");
+        uporabnikiZrno.getUporabniki().forEach(u -> pw.append("<strong>IME:</strong> ").append(u.getIme()).append("  <strong>PRIIMEK:</strong> ").append(u.getPriimek()).append("  <strong>EMAIL:</strong> ").append(u.getEmail()).append("  <strong>NASLOV:</strong> ").append(u.getNaslov()).append("  <strong>UPORABNISKO IME:</strong> ").append(u.getUporabniskoIme()).append("<br/>"));
 
 
-        pw.append("<br/>");
-        uporabnikiZrno.getPetras().stream().forEach(u -> pw.append("<strong>IME:</strong> " + u.getIme() + " <strong>PRIIMEK:</strong> " + u.getPriimek() + "<br/>"));
+        pw.append("<br/>Izpis vseh podatkov za uporabnike z imenov \"Petra\"<br/>");
+        uporabnikiZrno.getPetras().forEach(u -> pw.append("<strong>IME:</strong> ").append(u.getIme()).append("  <strong>PRIIMEK:</strong> ").append(u.getPriimek()).append("  <strong>EMAIL:</strong> ").append(u.getEmail()).append("  <strong>NASLOV:</strong> ").append(u.getNaslov()).append("  <strong>UPORABNISKO IME:</strong> ").append(u.getUporabniskoIme()).append("<br/>"));
 
     }
 }

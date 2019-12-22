@@ -1,16 +1,19 @@
 package si.fri.prpo.nakupovalniseznami.zrno;
 
+import si.fri.prpo.nakupovalniseznami.anotacije.BeleziKlice;
 import si.fri.prpo.nakupovalniseznami.entitete.WishList;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 import javax.enterprise.context.ApplicationScoped;
-import javax.persistence.*;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 import javax.transaction.Transactional;
 import java.util.List;
 import java.util.logging.Logger;
 
 @ApplicationScoped
+@BeleziKlice
 public class WishListZrno {
 
     @PersistenceContext(unitName = "nakupovalni-seznami-jpa")
@@ -43,27 +46,36 @@ public class WishListZrno {
 
     @Transactional
     public WishList pridobiWishList(int id) {
-        WishList wl = em.find(WishList.class, id);
-
-        return wl;
+        WishList w = em.find(WishList.class, id);
+        if(w == null){
+            log.info("Wish list not found!");
+            return null;
+        }else {
+            w.setIdWishListe(w.getIdWishListe());
+            em.merge(w);
+            return w;
+        }
     }
 
     @Transactional
     public WishList dodajWishList(WishList wl) {
         if (wl != null) {
             em.persist(wl);
+            log.info("Wish list added with id: " + wl.getIdWishListe());
         }
-
         return wl;
     }
 
     @Transactional
     public WishList posodobiWishList(int id, WishList wl) {
         WishList wl2 = em.find(WishList.class, id);
-
-        wl.setIdWishListe(wl2.getIdWishListe());
-        em.merge(wl);
-
+        if(wl2 == null){
+            log.info("Wish list not found!");
+        }else {
+            wl.setIdWishListe(wl2.getIdWishListe());
+            em.merge(wl);
+            log.info("Updating successfully.");
+        }
         return wl;
     }
 
@@ -73,6 +85,10 @@ public class WishListZrno {
 
         if (wl != null) {
             em.remove(wl);
+            log.info("Wish list successfully removed.");
+        }
+        else {
+            log.info("Wish list not found!");
         }
 
         return id;
