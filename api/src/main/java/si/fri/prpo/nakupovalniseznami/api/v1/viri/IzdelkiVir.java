@@ -6,8 +6,10 @@ import si.fri.prpo.nakupovalniseznami.zrno.IzdelkiZrno;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.ws.rs.*;
+import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.UriInfo;
 
 @ApplicationScoped
 @Path("izdelki")
@@ -15,6 +17,8 @@ import javax.ws.rs.core.Response;
 @Produces(MediaType.APPLICATION_JSON)
 public class IzdelkiVir {
 
+    @Context
+    protected UriInfo uriInfo;
 
     @Inject
     private IzdelkiZrno izdelkiZrno;

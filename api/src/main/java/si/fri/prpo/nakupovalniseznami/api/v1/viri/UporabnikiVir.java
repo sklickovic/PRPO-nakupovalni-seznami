@@ -15,7 +15,6 @@ import javax.ws.rs.core.*;
 @Produces(MediaType.APPLICATION_JSON)
 public class UporabnikiVir{
 
-
     @Context
     protected UriInfo uriInfo;
 
