@@ -17,8 +17,4 @@ public class BelezenjeKlicevZrno {
         log.info("Stevilo klicev: " + stKlicev);
     }
 
-    public int pridobiStKlicev() {
-        return stKlicev;
-    }
-
 }
