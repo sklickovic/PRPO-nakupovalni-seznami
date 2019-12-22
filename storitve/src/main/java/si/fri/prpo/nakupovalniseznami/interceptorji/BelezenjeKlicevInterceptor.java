@@ -15,8 +15,6 @@ public class BelezenjeKlicevInterceptor {
     @Inject
     private BelezenjeKlicevZrno belezenjeKlicevZrno;
 
-    private int steviloKlicev = 0;
-
     @AroundInvoke
     public Object stejKlice(InvocationContext context) throws Exception {
         belezenjeKlicevZrno.klic();

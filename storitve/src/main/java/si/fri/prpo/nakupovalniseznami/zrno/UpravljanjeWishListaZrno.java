@@ -45,7 +45,7 @@ public class UpravljanjeWishListaZrno {
         WishList list = new WishList();
         list.setUporabnik(u);
         list.setList(wl.getIzdelki());
-
+        log.info("Wish list has been successfully created.");
         return wishListZrno.dodajWishList(list);
     }
 
