@@ -26,7 +26,12 @@ public class IzdelkiVir {
     @GET
     @Path("{id}")
     public Response pridobiIzdelek(@PathParam("id") Integer id) {
-        return Response.ok(izdelkiZrno.pridobiIzdelek(id)).build();
+        Izdelki izdelek = izdelkiZrno.pridobiIzdelek(id);
+
+        if (izdelek == null) {
+            return Response.status(Response.Status.NOT_FOUND).build();
+        }
+        return Response.ok(izdelek).build();
     }
 
     @POST
