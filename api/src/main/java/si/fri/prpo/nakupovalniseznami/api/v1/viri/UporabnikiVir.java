@@ -13,7 +13,7 @@ import javax.ws.rs.core.*;
 @Path("uporabniki")
 @Consumes(MediaType.APPLICATION_JSON)
 @Produces(MediaType.APPLICATION_JSON)
-public class UporabnikiVir extends Application {
+public class UporabnikiVir{
 
 
     @Context

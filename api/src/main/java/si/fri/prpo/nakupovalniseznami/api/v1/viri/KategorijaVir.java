@@ -7,7 +7,6 @@ import si.fri.prpo.nakupovalniseznami.zrno.KategorijaZrno;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.ws.rs.*;
-import javax.ws.rs.core.Application;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
@@ -15,7 +14,7 @@ import javax.ws.rs.core.Response;
 @Path("kategorije")
 @Consumes(MediaType.APPLICATION_JSON)
 @Produces(MediaType.APPLICATION_JSON)
-public class KategorijaVir extends Application {
+public class KategorijaVir {
 
     @Inject
     private KategorijaZrno kategorijaZrno;
