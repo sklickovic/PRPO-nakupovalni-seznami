@@ -1,11 +1,15 @@
 package si.fri.prpo.nakupovalniseznami.zrno;
 
+import com.kumuluz.ee.rest.beans.QueryParameters;
+import com.kumuluz.ee.rest.utils.JPAUtils;
 import si.fri.prpo.nakupovalniseznami.entitete.Uporabnik;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 import javax.enterprise.context.ApplicationScoped;
-import javax.persistence.*;
+import javax.enterprise.inject.Default;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 import javax.transaction.Transactional;
 import java.util.List;
 import java.util.logging.Logger;
@@ -29,22 +33,27 @@ public class UporabnikZrno {
         log.info("Uničenje zrna: " + UporabnikZrno.class.getSimpleName());
     }
 
-    public List<Uporabnik> getUporabniki(QueryParameters query) {
+    @Default
+    public Long pridobiUporabnikeCnt(QueryParameters query) {
+        Long cnt = JPAUtils.queryEntitiesCount(em, Uporabnik.class, query);
+        return cnt;
+    }
 
-        return JPAUtils.queryEntities(em, Uporabnik.class, query);
+    @Default
+    public List<Uporabnik> getUporabniki() {
+
+        return (List<Uporabnik>) em.createNamedQuery("Uporabnik.getAll").getResultList();
     }
 
     public List<Uporabnik> getPetras() {
-        List<Uporabnik> petras = em.createNamedQuery("Uporabnik.getPetras").getResultList();
 
-        return petras;
+        return (List<Uporabnik>) em.createNamedQuery("Uporabnik.getPetras").getResultList();
     }
 
     @Transactional
     public Uporabnik pridobiUporabnika(int id) {
-        Uporabnik user = em.find(Uporabnik.class, id);
 
-        return user;
+        return em.find(Uporabnik.class, id);
     }
 
     @Transactional

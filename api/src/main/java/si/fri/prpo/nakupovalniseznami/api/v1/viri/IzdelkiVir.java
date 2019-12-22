@@ -3,7 +3,6 @@ package si.fri.prpo.nakupovalniseznami.api.v1.viri;
 import si.fri.prpo.nakupovalniseznami.entitete.Izdelki;
 import si.fri.prpo.nakupovalniseznami.zrno.IzdelkiZrno;
 
-import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.ws.rs.*;
