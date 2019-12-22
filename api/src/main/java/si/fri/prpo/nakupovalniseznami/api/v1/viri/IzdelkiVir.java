@@ -10,7 +10,6 @@ import javax.ws.rs.core.Application;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
-
 @ApplicationScoped
 @Path("izdelki")
 @Consumes(MediaType.APPLICATION_JSON)
@@ -22,6 +21,7 @@ public class IzdelkiVir extends Application {
     private IzdelkiZrno izdelkiZrno;
 
     @GET
+    @Path("{id}")
     public Response pridobiIzdelek(@PathParam("id") Integer id) {
         return Response.ok(izdelkiZrno.pridobiIzdelek(id)).build();
     }

@@ -1,6 +1,5 @@
 package si.fri.prpo.nakupovalniseznami.api.v1.viri;
 
-
 import si.fri.prpo.nakupovalniseznami.entitete.Kategorija;
 import si.fri.prpo.nakupovalniseznami.zrno.KategorijaZrno;
 
@@ -25,8 +24,8 @@ public class KategorijaVir extends Application {
         return Response.ok(kategorijaZrno.getKategorije()).build();
     }
 
-    @GET
     @PathParam("{id}")
+    @GET
     public Response pridobiKategorijo(@PathParam("id") Integer id) {
         Kategorija kategorija = kategorijaZrno.pridobiKategorijo(id);
 
