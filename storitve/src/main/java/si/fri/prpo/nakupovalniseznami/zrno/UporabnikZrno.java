@@ -37,9 +37,15 @@ public class UporabnikZrno {
     }
 
     @Default
-    public Long pridobiUporabnikeCnt(QueryParameters query) {
-        Long cnt = JPAUtils.queryEntitiesCount(em, Uporabnik.class, query);
-        return cnt;
+    public Long pridobiUporabnikeCount(QueryParameters query){
+        Long count = JPAUtils.queryEntitiesCount(em, Uporabnik.class, query);
+        return count;
+    }
+
+    @Default
+    public List<Uporabnik> pridobiUporabnike(QueryParameters query){
+        List<Uporabnik> uporabniki = JPAUtils.queryEntities(em, Uporabnik.class, query);
+        return uporabniki;
     }
 
     @Default
@@ -54,6 +60,20 @@ public class UporabnikZrno {
         List<Uporabnik> petras = em.createNamedQuery("Uporabnik.getPetras").getResultList();
         return petras;
     }
+
+    /*public List<Uporabnik> getAllUsersWithCriteria() {
+
+        CriteriaBuilder cb = em.getCriteriaBuilder();
+
+        CriteriaQuery<Uporabnik> q = cb.createQuery(Uporabnik.class);
+        Root<Uporabnik> u = q.from(Uporabnik.class);
+        q.select(u);
+
+        TypedQuery<Uporabnik> query = em.createQuery(q);
+        List<Uporabnik> results = query.getResultList();
+
+        return results;
+    }*/
 
     @Transactional
     public Uporabnik pridobiUporabnika(int id) {
@@ -83,7 +103,7 @@ public class UporabnikZrno {
             log.info("User not found!");
         }
         else {
-            user.setId(user.getId());
+            uporabnik.setId(user.getId());
             em.merge(uporabnik);
             log.info("Updating successfully.");
         }
