@@ -1,12 +1,15 @@
 package si.fri.prpo.nakupovalniseznami.zrno;
 
 
+import com.kumuluz.ee.rest.beans.QueryParameters;
+import com.kumuluz.ee.rest.utils.JPAUtils;
 import si.fri.prpo.nakupovalniseznami.anotacije.BeleziKlice;
 import si.fri.prpo.nakupovalniseznami.entitete.Kategorija;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.inject.Default;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.transaction.Transactional;
@@ -33,8 +36,21 @@ public class KategorijaZrno {
         log.info("Uničenje zrna: " + Kategorija.class.getSimpleName());
     }
 
+    @Default
+    public Long pridobiKategorijeCount(QueryParameters query){
+        Long count = JPAUtils.queryEntitiesCount(em, Kategorija.class, query);
+        return count;
+    }
+
+    @Default
     public List<Kategorija> getKategorije() {
         List<Kategorija> kategorije = em.createNamedQuery("Kategorija.getAll").getResultList();
+        return kategorije;
+    }
+
+    @Default
+    public List<Kategorija> getKategorije(QueryParameters query) {
+        List<Kategorija> kategorije = JPAUtils.queryEntities(em, Kategorija.class, query);
         return kategorije;
     }
 

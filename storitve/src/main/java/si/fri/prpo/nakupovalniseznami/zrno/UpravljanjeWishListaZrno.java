@@ -1,22 +1,27 @@
 package si.fri.prpo.nakupovalniseznami.zrno;
 
 import si.fri.prpo.nakupovalniseznami.dto.WishListDTO;
+import si.fri.prpo.nakupovalniseznami.entitete.Izdelki;
 import si.fri.prpo.nakupovalniseznami.entitete.Uporabnik;
 import si.fri.prpo.nakupovalniseznami.entitete.WishList;
-import si.fri.prpo.nakupovalniseznami.entitete.Izdelki;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 import java.util.Collections;
-import java.util.logging.Logger;
 import java.util.List;
+import java.util.logging.Logger;
 
 @ApplicationScoped
 public class UpravljanjeWishListaZrno {
 
     private Logger log = Logger.getLogger(UpravljanjeWishListaZrno.class.getName());
+
+    @PersistenceContext(unitName = "nakupovalni-seznami-jpa")
+    private EntityManager em;
 
     @PostConstruct
     private void init() {
@@ -40,6 +45,7 @@ public class UpravljanjeWishListaZrno {
 
         if (u == null) {
             log.info("Uporabnik ne obstaja!");
+            return null;
         }
 
         WishList list = new WishList();

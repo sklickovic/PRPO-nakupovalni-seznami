@@ -1,12 +1,16 @@
 package si.fri.prpo.nakupovalniseznami.zrno;
 
+import com.kumuluz.ee.rest.beans.QueryParameters;
+import com.kumuluz.ee.rest.utils.JPAUtils;
 import si.fri.prpo.nakupovalniseznami.anotacije.BeleziKlice;
 import si.fri.prpo.nakupovalniseznami.entitete.Izdelki;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 import javax.enterprise.context.ApplicationScoped;
-import javax.persistence.*;
+import javax.enterprise.inject.Default;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 import javax.transaction.Transactional;
 import java.util.List;
 import java.util.logging.Logger;
@@ -31,16 +35,28 @@ public class IzdelkiZrno {
         log.info("Uničenje zrna: " + IzdelkiZrno.class.getSimpleName());
     }
 
+    @Default
+    public Long pridobiIzdelkeCount(QueryParameters query){
+        Long count = JPAUtils.queryEntitiesCount(em, Izdelki.class, query);
+        return count;
+    }
+
+    @Default
     public List<Izdelki> getIzdelki() {
 
         List<Izdelki> izdelki = em.createNamedQuery("Izdelki.getAll").getResultList();
-
         return izdelki;
     }
 
+    @Default
+    public List<Izdelki> getArtikli(QueryParameters query) {
+        List<Izdelki> artikli = JPAUtils.queryEntities(em, Izdelki.class, query);
+        return artikli;
+    }
+
     @Transactional
-    public Izdelki pridobiIzdelek(int id) {
-        Izdelki i = em.find(Izdelki.class, id);
+    public List<Izdelki> pridobiIzdelek(int id) {
+        List<Izdelki> i = (List<Izdelki>) em.createNamedQuery("Izdelki.getAll");
         if(i == null){
             log.info("Article not found!");
             return null;

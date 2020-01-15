@@ -1,11 +1,14 @@
 package si.fri.prpo.nakupovalniseznami.zrno;
 
+import com.kumuluz.ee.rest.beans.QueryParameters;
+import com.kumuluz.ee.rest.utils.JPAUtils;
 import si.fri.prpo.nakupovalniseznami.anotacije.BeleziKlice;
 import si.fri.prpo.nakupovalniseznami.entitete.WishList;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.inject.Default;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.transaction.Transactional;
@@ -32,15 +35,22 @@ public class WishListZrno {
         log.info("Uničenje zrna: " + WishListZrno.class.getSimpleName());
     }
 
+    @Default
+    public Long pridobiWishListCount(QueryParameters query){
+        Long count = JPAUtils.queryEntitiesCount(em, WishList.class, query);
+        return count;
+    }
+
+    @Default
     public List<WishList> getWishLists() {
         List<WishList> wishlist = em.createNamedQuery("WishList.getAll").getResultList();
 
         return wishlist;
     }
 
-    public List<WishList> getUserList() {
-        List<WishList> wishlist = em.createNamedQuery("WishList.getSeznamUporabnikov").getResultList();
-
+    @Default
+    public List<WishList> getWishLists(QueryParameters query) {
+        List<WishList> wishlist = JPAUtils.queryEntities(em, WishList.class, query);
         return wishlist;
     }
 

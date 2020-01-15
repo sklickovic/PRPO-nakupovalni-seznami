@@ -41,6 +41,8 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <kumuluzee.version>3.5.0</kumuluzee.version>
         <postgresql.version>42.2.8</postgresql.version>
+        <kumuluzee-rest.version>1.2.3</kumuluzee-rest.version>
+        <kumuluzee-openapi.version>1.0.1</kumuluzee-openapi.version>
     </properties>
     <dependencyManagement>
         <dependencies>
@@ -54,6 +56,7 @@
             <dependency>
                 <groupId>com.kumuluz.ee</groupId>
                 <artifactId>kumuluzee-jax-rs-jersey</artifactId>
+                <version>${kumuluzee.version}</version>
             </dependency>
 
             <dependency>
