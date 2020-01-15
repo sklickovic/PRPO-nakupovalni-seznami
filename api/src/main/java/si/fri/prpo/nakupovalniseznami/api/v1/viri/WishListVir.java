@@ -1,6 +1,8 @@
 package si.fri.prpo.nakupovalniseznami.api.v1.viri;
 
+//import io.swagger.v3.oas.annotations.Operation;
 import si.fri.prpo.nakupovalniseznami.entitete.WishList;
+import si.fri.prpo.nakupovalniseznami.zrno.UpravljanjeWishListaZrno;
 import si.fri.prpo.nakupovalniseznami.zrno.WishListZrno;
 
 import javax.enterprise.context.ApplicationScoped;
@@ -17,6 +19,7 @@ public class WishListVir{
 
     @Inject
     private WishListZrno wishListZrno;
+    private UpravljanjeWishListaZrno upravljanjeWLZrno;
 
     @GET
     public Response pridobiWishLists() {
@@ -56,4 +59,27 @@ public class WishListVir{
     public Response odstraniWishList(@PathParam("id") Integer id) {
         return Response.status(Response.Status.OK).entity(wishListZrno.odstraniWishList(id)).build();
     }
+
+    /*
+    @PUT
+    @Path("{id}")
+
+    @Operation(
+            summary = "Sort items on wishlist - cheapest first",
+            tags = "Sorting wishlist items",
+            responses = {
+                    @ApiResponse(
+                            description = "Sorting wishlist",
+                            content = @Content(
+                                    mediaType = "application/json",
+                                    schema = @Schema(implementation = WishList.class)
+                            )
+                    ),
+                    @Apiresponse(responseCode = "400", description = "An error has occured! Please check if you have any items on your wishlist!")
+
+            },
+            description = "Sort items on given wishlist - cheapest first"
+    )
+     */
+
 }
