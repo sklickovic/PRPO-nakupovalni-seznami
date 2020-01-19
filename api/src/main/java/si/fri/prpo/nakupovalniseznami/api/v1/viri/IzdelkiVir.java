@@ -97,7 +97,6 @@ public class IzdelkiVir {
         return Response.status(Response.Status.CREATED).build();
     }
 
-    @RolesAllowed({"user", "admin"})
     @Schema(description = "Posodobi izdelek.")
     @SecurityRequirement(name = "none")
     @Operation(summary = "Posodobitev podatkov izdelka.", tags = {"izdelki"}, description = "Posodobitev podatkov dolocenega izdelka", responses = {
@@ -110,7 +109,7 @@ public class IzdelkiVir {
         return Response.status(Response.Status.OK).build();
     }
 
-    @RolesAllowed("admin")
+
     @Schema(description = "Izbrise izdelek")
     @SecurityRequirement(name = "none")
     @Operation(summary = "Brisanje izdelka", tags = {"izdelki"}, description = "Iz baze izbrise podatke dolocenega izdelka", responses = {

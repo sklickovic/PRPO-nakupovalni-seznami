@@ -16,6 +16,24 @@
                             required minlength="4"/>
                 </td>
             </tr>
+            <tr>
+                <td><label for="uporabniskoIme">Email</label></td>
+                <td><input [(ngModel)]="uporabnik.email" id="email" name="email" 
+                            required minlength="5"/>
+                </td>
+            </tr>
+            <tr>
+                <td><label for="naslov">Naslov</label></td>
+                <td><input [(ngModel)]="uporabnik.naslov" id="naslov" name="naslov" 
+                            required minlength="4"/>
+                </td>
+            </tr>
+            <tr>
+                <td><label for="password">Geslo</label></td>
+                <td><input [(ngModel)]="uporabnik.password" id="password" name="password" 
+                            required minlength="8"/>
+                </td>
+            </tr>
         </table>
 
 

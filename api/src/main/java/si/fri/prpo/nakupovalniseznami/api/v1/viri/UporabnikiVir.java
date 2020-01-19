@@ -1,6 +1,7 @@
 package si.fri.prpo.nakupovalniseznami.api.v1.viri;
 
 import com.kumuluz.ee.rest.beans.QueryParameters;
+import com.kumuluz.ee.cors.annotations.CrossOrigin;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.headers.Header;
@@ -27,6 +28,7 @@ import java.util.List;
 @Path("uporabniki")
 @Consumes(MediaType.APPLICATION_JSON)
 @Produces(MediaType.APPLICATION_JSON)
+@CrossOrigin(supportedMethods = "GET, POST, PUT, DELETE, HEAD, OPTIONS")
 public class UporabnikiVir {
 
     @Context
@@ -90,7 +92,6 @@ public class UporabnikiVir {
         return Response.status(Response.Status.CREATED).build();
     }
 
-    @RolesAllowed({"user", "admin"})
     @Schema(description = "Posodobi uporabnika.")
     @SecurityRequirement(name = "none")
     @Operation(summary = "Posodobitev podatkov uporabnika.", tags = {"uporabniki"}, description = "Posodobitev podatkov dolocenega uporabnika", responses = {
@@ -103,7 +104,6 @@ public class UporabnikiVir {
         return Response.status(Response.Status.OK).build();
     }
 
-    @RolesAllowed("admin")
     @Schema(description = "Izbrise uporabnika")
     @SecurityRequirement(name = "none")
     @Operation(summary = "Brisanje uporabnika", tags = {"uporabniki"}, description = "Iz baze izbrise podatke dolocenega uporabnika", responses = {

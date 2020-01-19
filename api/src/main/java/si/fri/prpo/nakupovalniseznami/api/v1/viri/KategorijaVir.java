@@ -91,7 +91,6 @@ public class KategorijaVir {
         return Response.status(Response.Status.CREATED).build();
     }
 
-    @RolesAllowed({"user", "admin"})
     @Schema(description = "Posodobi kategorijo.")
     @SecurityRequirement(name = "none")
     @Operation(summary = "Posodobitev podatkov kategorije.", tags = {"kategorije"}, description = "Posodobitev podatkov dolocene kategorije", responses = {
@@ -104,7 +103,6 @@ public class KategorijaVir {
         return Response.status(Response.Status.OK).build();
     }
 
-    @RolesAllowed("admin")
     @Schema(description = "Izbrise kategorijo")
     @SecurityRequirement(name = "none")
     @Operation(summary = "Brisanje kategorije", tags = {"kategorije"}, description = "Iz baze izbrise podatke dolocene kategorije", responses = {

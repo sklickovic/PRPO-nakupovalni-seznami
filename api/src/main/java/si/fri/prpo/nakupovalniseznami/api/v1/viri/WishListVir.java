@@ -95,7 +95,6 @@ public class WishListVir{
         return Response.status(Response.Status.CREATED).build();
     }
 
-    @RolesAllowed({"user", "admin"})
     @Schema(description = "Posodobi seznam zelja.")
     @SecurityRequirement(name = "none")
     @Operation(summary = "Posodobitev podatkov seznama zelja.", tags = {"wishlist"}, description = "Posodobitev podatkov dolocenega seznama zelja", responses = {
@@ -109,7 +108,6 @@ public class WishListVir{
     }
 
 
-    @RolesAllowed("admin")
     @Schema(description = "Izbrise seznam zelja")
     @SecurityRequirement(name = "none")
     @Operation(summary = "Brisanje seznama zelja", tags = {"wishlist"}, description = "Iz baze izbrise podatke dolocenega seznama zelja", responses = {

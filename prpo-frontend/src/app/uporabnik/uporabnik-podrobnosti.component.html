@@ -19,12 +19,24 @@
             <td>Uporabniško ime:</td>
             <td>{{uporabnik.uporabniskoIme}}</td>
         </tr>
+        <tr>
+            <td>Naslov:</td>
+            <td>{{uporabnik.naslov}}</td>
+        </tr>
+        <tr>
+            <td>Geslo:</td>
+            <td>{{uporabnik.password}}</td>
+        </tr>
+        <tr>
+            <td>Email:</td>
+            <td>{{uporabnik.email}}</td>
+        </tr>
     </table>
 
     <br>
-    <h4>Opomniki:</h4>
+    <h4>WishListe:</h4>
     <ul>
-        <li *ngFor="let opomnik of uporabnik.opomniki">
+        <li *ngFor="let wishList of uporabnik.wishLists">
             {{opomnik.naslov}}: {{opomnik.opis}}
         </li>
     </ul>

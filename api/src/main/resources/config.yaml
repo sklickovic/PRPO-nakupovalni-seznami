@@ -5,10 +5,15 @@ kumuluzee:
     name: dev
   datasources:
     - jndi-name: jdbc-seznami
-      connection-url: jdbc:postgresql://192.168.99.100:5432/nakupovalniseznami
+      connection-url: jdbc:postgresql://localhost/nakupovalniseznami
       username: postgres
       password: postgres
       max-pool-size: 20
+  cors-filter:
+    annotations:
+      uporabnikvir:
+        allow-origin: "http://localhost:8080/v1/uporabniki"
+        allow-subdomains: false
   security:
     keycloak:
       json: '{
