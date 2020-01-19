@@ -12,8 +12,12 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Default;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Root;
 import javax.transaction.Transactional;
 import java.util.List;
+import java.util.UUID;
 import java.util.logging.Logger;
 
 @ApplicationScoped
@@ -21,14 +25,13 @@ import java.util.logging.Logger;
 public class KategorijaZrno {
 
     @PersistenceContext(unitName = "nakupovalni-seznami-jpa")
-
     private EntityManager em;
-
-    private Logger log = Logger.getLogger(KategorijaZrno.class.getName());
+    private final static Logger log = Logger.getLogger(KategorijaZrno.class.getName());
 
     @PostConstruct
     private void init() {
-        log.info("Inicializacija zrna: " + Kategorija.class.getSimpleName());
+        final String uuid = UUID.randomUUID().toString().replace("-", "");
+        log.info("Inicializacija zrna: " + KategorijaZrno.class.getSimpleName()+ ", uuid = "+ uuid);
     }
 
     @PreDestroy
@@ -36,15 +39,12 @@ public class KategorijaZrno {
         log.info("Uničenje zrna: " + Kategorija.class.getSimpleName());
     }
 
-    @Default
-    public Long pridobiKategorijeCount(QueryParameters query){
-        Long count = JPAUtils.queryEntitiesCount(em, Kategorija.class, query);
-        return count;
-    }
-
-    @Default
     public List<Kategorija> getKategorije() {
-        List<Kategorija> kategorije = em.createNamedQuery("Kategorija.getAll").getResultList();
+        CriteriaBuilder criteria = em.getCriteriaBuilder();
+        CriteriaQuery<Kategorija> query = criteria.createQuery(Kategorija.class);
+        Root<Kategorija> root = query.from(Kategorija.class);
+        query.select(root);
+        List<Kategorija> kategorije = em.createQuery(query).getResultList();
         return kategorije;
     }
 
@@ -54,15 +54,20 @@ public class KategorijaZrno {
         return kategorije;
     }
 
+    @Default
+    public Long pridobiKategorijeCount(QueryParameters query){
+        Long count = JPAUtils.queryEntitiesCount(em, Kategorija.class, query);
+        return count;
+    }
+
     @Transactional
     public Kategorija pridobiKategorijo(int id) {
         Kategorija kat = em.find(Kategorija.class, id);
         if (kat == null) {
             log.info("Category not found!");
             return null;
-        } else {
-            return kat;
         }
+        return kat;
     }
 
     @Transactional
@@ -75,29 +80,29 @@ public class KategorijaZrno {
     }
 
     @Transactional
-    public Kategorija posodobiKategorijo(int id, Kategorija kat) {
-        Kategorija kat1 = em.find(Kategorija.class, id);
+    public Kategorija posodobiKategorijo(Kategorija kat) {
+        Kategorija kat1 = em.find(Kategorija.class, kat.getIdKategorije());
         if (kat1 == null) {
-            log.info("Category not found!");
-        } else {
-            kat.setIdKategorije(kat1.getIdKategorije());
-            em.merge(kat);
-            log.info("Updating successfully.");
+            log.warning("Category not found!");
+            return null;
         }
-        return kat;
+        else {
+            kat1.setNazivKategorije(kat.getNazivKategorije());
+            kat1.setIzdelkiList(kat.getIzdelkiList());
+            em.merge(kat1);
+            log.info("Updating successfully.");
+            return kat1;
+        }
     }
 
     @Transactional
-    public int odstraniKategorijo(int id) {
+    public void odstraniKategorijo(int id) {
         Kategorija kat = em.find(Kategorija.class, id);
-
         if (kat != null) {
             em.remove(kat);
-            log.info("Category successfully removed.");
+            log.info("Category with id " + id + " successfully deleted.");
         } else {
             log.info("Category not found!");
         }
-
-        return id;
     }
 }

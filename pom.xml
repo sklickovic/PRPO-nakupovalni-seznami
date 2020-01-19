@@ -15,7 +15,17 @@
         <module>entitete</module>
     </modules>
 
-    <dependencies>
+    <properties>
+        <maven.compiler.source>1.8</maven.compiler.source>
+        <maven.compiler.target>1.8</maven.compiler.target>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <kumuluzee.version>3.5.0</kumuluzee.version>
+        <postgresql.version>42.2.5</postgresql.version>
+        <kumuluzee-rest.version>1.1.0</kumuluzee-rest.version>
+        <kumuluzee-openapi.version>3.0.2</kumuluzee-openapi.version>
+    </properties>
+
+    <!--<dependencies>
         <dependency>
             <groupId>jakarta.ws.rs</groupId>
             <artifactId>jakarta.ws.rs-api</artifactId>
@@ -33,17 +43,13 @@
             <artifactId>slf4j-simple</artifactId>
             <version>1.7.21</version>
         </dependency>
-    </dependencies>
+        <dependency>
+            <groupId>com.kumuluz.ee.openapi</groupId>
+            <artifactId>kumuluzee-openapi-ui</artifactId>
+            <version>3.0.2</version>
+        </dependency>
+    </dependencies>-->
 
-    <properties>
-        <maven.compiler.source>1.8</maven.compiler.source>
-        <maven.compiler.target>1.8</maven.compiler.target>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <kumuluzee.version>3.5.0</kumuluzee.version>
-        <postgresql.version>42.2.8</postgresql.version>
-        <kumuluzee-rest.version>1.2.3</kumuluzee-rest.version>
-        <kumuluzee-openapi.version>1.0.1</kumuluzee-openapi.version>
-    </properties>
     <dependencyManagement>
         <dependencies>
             <dependency>
@@ -54,22 +60,10 @@
                 <scope>import</scope>
             </dependency>
             <dependency>
-                <groupId>com.kumuluz.ee</groupId>
-                <artifactId>kumuluzee-jax-rs-jersey</artifactId>
-                <version>${kumuluzee.version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>com.kumuluz.ee.openapi</groupId>
-                <artifactId>kumuluzee-openapi</artifactId>
-                <version>${kumuluzee-openapi.version}</version>
-            </dependency>
-            <dependency>
                 <groupId>org.postgresql</groupId>
                 <artifactId>postgresql</artifactId>
                 <version>${postgresql.version}</version>
             </dependency>
-
             <dependency>
                 <groupId>si.fri.prpo.nakupovalniseznami</groupId>
                 <artifactId>api</artifactId>
@@ -84,6 +78,11 @@
                 <groupId>si.fri.prpo.nakupovalniseznami</groupId>
                 <artifactId>entitete</artifactId>
                 <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.kumuluz.ee.rest</groupId>
+                <artifactId>kumuluzee-rest-core</artifactId>
+                <version>${kumuluzee-rest.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>

@@ -2,10 +2,7 @@ kumuluzee:
   name: nakupovalniSeznami
   version: 1.0.0
   env:
-    name: nakupovalni_seznami
-  openapi:
-    ui:
-      enabled: true
+    name: dev
   datasources:
     - jndi-name: jdbc-seznami
       connection-url: jdbc:postgresql://192.168.99.100:5432/nakupovalniseznami

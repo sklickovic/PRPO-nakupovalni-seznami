@@ -11,8 +11,12 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Default;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Root;
 import javax.transaction.Transactional;
 import java.util.List;
+import java.util.UUID;
 import java.util.logging.Logger;
 
 @ApplicationScoped
@@ -20,19 +24,33 @@ import java.util.logging.Logger;
 public class IzdelkiZrno {
 
     @PersistenceContext(unitName = "nakupovalni-seznami-jpa")
-
     private EntityManager em;
-
-    private Logger log = Logger.getLogger(IzdelkiZrno.class.getName());
+    private final static Logger log = Logger.getLogger(IzdelkiZrno.class.getName());
 
     @PostConstruct
     private void init() {
-        log.info("Inicializacija zrna: " + IzdelkiZrno.class.getSimpleName());
+        final String uuid = UUID.randomUUID().toString().replace("-", "");
+        log.info("Inicializacija zrna: " + IzdelkiZrno.class.getSimpleName()+ ", uuid = "+ uuid);
     }
 
     @PreDestroy
     private void destroy() {
         log.info("Uničenje zrna: " + IzdelkiZrno.class.getSimpleName());
+    }
+
+    public List<Izdelki> getIzdelki() {
+        CriteriaBuilder criteria = em.getCriteriaBuilder();
+        CriteriaQuery<Izdelki> query = criteria.createQuery(Izdelki.class);
+        Root<Izdelki> root = query.from(Izdelki.class);
+        query.select(root);
+        List<Izdelki> izdelki = em.createQuery(query).getResultList();
+        return izdelki;
+    }
+
+    @Default
+    public List<Izdelki> getIzdelki(QueryParameters query) {
+        List<Izdelki> izdelki = JPAUtils.queryEntities(em, Izdelki.class, query);
+        return izdelki;
     }
 
     @Default
@@ -41,28 +59,13 @@ public class IzdelkiZrno {
         return count;
     }
 
-    @Default
-    public List<Izdelki> getIzdelki() {
-
-        List<Izdelki> izdelki = em.createNamedQuery("Izdelki.getAll").getResultList();
-        return izdelki;
-    }
-
-    @Default
-    public List<Izdelki> getArtikli(QueryParameters query) {
-        List<Izdelki> artikli = JPAUtils.queryEntities(em, Izdelki.class, query);
-        return artikli;
-    }
-
-    @Transactional
-    public List<Izdelki> pridobiIzdelek(int id) {
-        List<Izdelki> i = (List<Izdelki>) em.createNamedQuery("Izdelki.getAll");
+    public Izdelki pridobiIzdelek(int id) {
+        Izdelki i = em.find(Izdelki.class, id);
         if(i == null){
             log.info("Article not found!");
             return null;
-        }else {
-            return i;
         }
+        return i;
     }
 
     @Transactional
@@ -71,36 +74,37 @@ public class IzdelkiZrno {
             em.persist(i);
             log.info("Article added with id: " + i.getIdIzdelka());
         }
-
         return i;
     }
 
     @Transactional
-    public Izdelki posodobiIzdelek(int id, Izdelki i) {
-        Izdelki izdelek = em.find(Izdelki.class, id);
+    public Izdelki posodobiIzdelek(Izdelki i) {
+        Izdelki izdelek = em.find(Izdelki.class, i.getIdIzdelka());
         if(izdelek == null){
             log.info("Article not found!");
-        } else {
-            i.setIdIzdelka(izdelek.getIdIzdelka());
-            em.merge(i);
-            log.info("Updating successfully.");
+            return null;
         }
-        return i;
+        else {
+            izdelek.setCena(i.getCena());
+            izdelek.setNazivIzdelka(i.getNazivIzdelka());
+            izdelek.setZalogaIzdelka(i.getZalogaIzdelka());
+            izdelek.setKategorije(i.getKategorije());
+            izdelek.setList(i.getList());
+            em.merge(izdelek);
+            log.info("Updating successfully complete");
+            return izdelek;
+        }
     }
 
     @Transactional
-    public int odstraniIzdelek(int id) {
-
+    public void odstraniIzdelek(int id) {
         Izdelki izdelek = em.find(Izdelki.class, id);
-
         if (izdelek != null) {
             em.remove(izdelek);
-            log.info("Article successfully removed.");
+            log.info("Article with id " + id + " successfully deleted.");
         }
         else {
             log.info("Article not found!");
         }
-
-        return id;
     }
 }

@@ -1,7 +1,7 @@
 package si.fri.prpo.nakupovalniseznami.entitete;
 
+import javax.json.bind.annotation.JsonbTransient;
 import javax.persistence.*;
-import java.util.List;
 
 @Entity
 @Table(name = "izdelki")
@@ -16,22 +16,24 @@ public class Izdelki {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer idIzdelka;
-
     private String cena;
     private String nazivIzdelka;
     private Integer zalogaIzdelka;
 
-
     //povezave
-    @ManyToMany(mappedBy = "izdelkiList")
-    private List<WishList> wishLists;
-
+    @JsonbTransient
     @ManyToOne
-    @JoinColumn(name="kategorijaId")
-    private Kategorija kategorijes;
+    @JoinColumn(name = "idWishListe")
+    private WishList list;
 
+    @JsonbTransient
+    @ManyToOne
+    @JoinColumn(name = "idKategorije")
+    private Kategorija kategorije;
 
     //setters and getters
+    @Id
+    @Column(name = "idIzdelka")
     public Integer getIdIzdelka() {
         return idIzdelka;
     }
@@ -40,6 +42,8 @@ public class Izdelki {
         this.idIzdelka = idIzdelka;
     }
 
+    @Basic
+    @Column(name = "cena")
     public String getCena() {
         return cena;
     }
@@ -48,6 +52,8 @@ public class Izdelki {
         this.cena = cena;
     }
 
+    @Basic
+    @Column(name = "nazivIzdelka")
     public String getNazivIzdelka() {
         return nazivIzdelka;
     }
@@ -56,11 +62,29 @@ public class Izdelki {
         this.nazivIzdelka = nazivIzdelka;
     }
 
+    @Basic
+    @Column(name = "zalogaIzdelka")
     public Integer getZalogaIzdelka() {
         return zalogaIzdelka;
     }
 
     public void setZalogaIzdelka(Integer zalogaIzdelka) {
         this.zalogaIzdelka = zalogaIzdelka;
+    }
+
+    public WishList getList() {
+        return list;
+    }
+
+    public void setList(WishList list) {
+        this.list = list;
+    }
+
+    public Kategorija getKategorije() {
+        return kategorije;
+    }
+
+    public void setKategorije(Kategorija kategorije) {
+        this.kategorije = kategorije;
     }
 }

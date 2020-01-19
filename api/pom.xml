@@ -13,11 +13,15 @@
 
     <properties>
         <kumuluzee-security.version>1.0.1</kumuluzee-security.version>
-        <kumuluzee-config.version>1.1.0</kumuluzee-config.version>
-        <kumuluzee-cors.version>1.0.4</kumuluzee-cors.version>
+        <!--<kumuluzee-config.version>1.1.0</kumuluzee-config.version>
+        <kumuluzee-cors.version>1.0.4</kumuluzee-cors.version>-->
     </properties>
 
     <dependencies>
+        <dependency>
+            <groupId>si.fri.prpo.nakupovalniseznami</groupId>
+            <artifactId>storitve</artifactId>
+        </dependency>
         <dependency>
             <groupId>com.kumuluz.ee</groupId>
             <artifactId>kumuluzee-core</artifactId>
@@ -27,17 +31,13 @@
             <artifactId>kumuluzee-servlet-jetty</artifactId>
         </dependency>
         <dependency>
-            <groupId>si.fri.prpo.nakupovalniseznami</groupId>
-            <artifactId>storitve</artifactId>
-        </dependency>
-        <dependency>
             <groupId>com.kumuluz.ee</groupId>
-            <artifactId>kumuluzee-json-p-jsonp</artifactId>
+            <artifactId>kumuluzee-jax-rs-jersey</artifactId>
         </dependency>
         <dependency>
-            <groupId>com.kumuluz.ee.security</groupId>
-            <artifactId>kumuluzee-security-keycloak</artifactId>
-            <version>${kumuluzee-security.version}</version>
+            <groupId>com.kumuluz.ee.openapi</groupId>
+            <artifactId>kumuluzee-openapi</artifactId>
+            <version>1.0.0</version>
         </dependency>
         <dependency>
             <groupId>com.kumuluz.ee.openapi</groupId>
@@ -45,11 +45,23 @@
             <version>1.0.0</version>
         </dependency>
         <dependency>
+            <groupId>com.kumuluz.ee.security</groupId>
+            <artifactId>kumuluzee-security-keycloak</artifactId>
+            <version>${kumuluzee-security.version}</version>
+        </dependency>
+
+        <!--<dependency>
+            <groupId>com.kumuluz.ee</groupId>
+            <artifactId>kumuluzee-json-p-jsonp</artifactId>
+        </dependency>
+
+        <dependency>
             <groupId>com.kumuluz.ee.cors</groupId>
             <artifactId>kumuluzee-cors</artifactId>
             <version>${kumuluzee-cors.version}</version>
-        </dependency>
+        </dependency>-->
     </dependencies>
+
     <build>
         <plugins>
             <plugin>

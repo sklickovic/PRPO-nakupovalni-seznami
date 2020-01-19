@@ -1,5 +1,6 @@
 package si.fri.prpo.nakupovalniseznami.entitete;
 
+import javax.json.bind.annotation.JsonbTransient;
 import javax.persistence.*;
 import java.util.List;
 
@@ -8,7 +9,8 @@ import java.util.List;
 @NamedQueries(value =
         {
                 @NamedQuery(name = "WishList.getAll", query = "SELECT w FROM WishList w"),
-                @NamedQuery(name = "WishList.getSeznamUporabnikov", query = "SELECT u FROM WishList u WHERE u.uporabnik = :uporabnik")
+                @NamedQuery(name = "WishList.getSeznamUporabnikov", query = "SELECT u FROM WishList u WHERE u.user = :uporabnik"),
+                @NamedQuery(name = "WishList.getById", query = "SELECT u FROM WishList u WHERE u.idWishListe = :id")
         })
 public class WishList {
 
@@ -16,26 +18,20 @@ public class WishList {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer idWishListe;
 
-    private Integer zaloga;
-
 
     //povezave
-    @ManyToOne
-    @JoinColumn(name="uporabnikId")
-    private Uporabnik uporabnik;
-
-    @ManyToMany(cascade = {
-            CascadeType.PERSIST,
-            CascadeType.MERGE
-    })
-    @JoinTable (name="wishList_izdelki",
-            joinColumns = @JoinColumn (name="wishListId"),
-            inverseJoinColumns = @JoinColumn (name="izdelkiId")
-    )
+    @OneToMany(mappedBy = "list")
     private List<Izdelki> izdelkiList;
+
+    @JsonbTransient
+    @ManyToOne
+    @JoinColumn (name="id")
+    private Uporabnik user;
 
 
     //setters and getters
+    @Id
+    @Column(name = "idWishListe")
     public Integer getIdWishListe() {
         return idWishListe;
     }
@@ -44,28 +40,19 @@ public class WishList {
         this.idWishListe = idWishListe;
     }
 
-    public Integer getZaloga() {
-        return zaloga;
+    public List<Izdelki> getIzdelkiList() {
+        return izdelkiList;
     }
 
-    public void setZaloga(Integer zaloga) {
-        this.zaloga = zaloga;
+    public void setIzdelkiList(List<Izdelki> izdelkiList) {
+        this.izdelkiList = izdelkiList;
     }
 
-    public Uporabnik getUporabnik() {
-        return this.uporabnik;
+    public Uporabnik getUser() {
+        return user;
     }
 
-    public void setUporabnik(Uporabnik u) {
-        this.uporabnik = u;
+    public void setUser(Uporabnik user) {
+        this.user = user;
     }
-
-    public List<Izdelki> getList() {
-        return this.izdelkiList;
-    }
-
-    public void setList(List<Izdelki> list) {
-        this.izdelkiList = list;
-    }
-
 }

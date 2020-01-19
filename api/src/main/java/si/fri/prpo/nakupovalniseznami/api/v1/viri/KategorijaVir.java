@@ -2,16 +2,18 @@ package si.fri.prpo.nakupovalniseznami.api.v1.viri;
 
 
 import com.kumuluz.ee.rest.beans.QueryParameters;
-import com.kumuluz.ee.security.annotations.Secure;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.headers.Header;
+import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.parameters.RequestBody;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import si.fri.prpo.nakupovalniseznami.entitete.Kategorija;
 import si.fri.prpo.nakupovalniseznami.zrno.KategorijaZrno;
 
-import javax.annotation.security.PermitAll;
 import javax.annotation.security.RolesAllowed;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
@@ -22,7 +24,6 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 import java.util.List;
 
-@Secure
 @ApplicationScoped
 @Path("kategorije")
 @Consumes(MediaType.APPLICATION_JSON)
@@ -35,12 +36,20 @@ public class KategorijaVir {
     @Inject
     private KategorijaZrno kategorijaZrno;
 
-    @PermitAll
-    @Schema(description = "Returns all categories")
+    @Schema(description = "Vrne kategorije.")
     @SecurityRequirement(name = "none")
-    @Operation(summary = "Get categories", tags = {"Category"}, description = "Returns all categories.", responses = {
-            @ApiResponse(description = "List of all categories", responseCode = "200", content = @Content(schema = @Schema(implementation =
-                    Kategorija.class)))
+    @Operation(summary = "Pridobi listo kategorij.", tags = {"kategorije"}, description = "Vrne listo vseh kategorij, ki so shranjene v bazi.", responses = {
+            @ApiResponse(
+                    description = "Lista vseh kategorij.",
+                    responseCode = "200",
+                    content = @Content(
+                            array = @ArraySchema(
+                                    schema = @Schema(implementation = Kategorija.class)
+                            )),
+                    headers = {
+                            @Header(name = "X-Total-Count", description = "Stevilo kategorij.")
+                    }
+            ),
     })
     @GET
     public Response pridobiKategorije() {
@@ -50,57 +59,61 @@ public class KategorijaVir {
         return Response.ok(kategorija).header("X-Total-Count", count).build();
     }
 
-    @PermitAll
-    @Schema(description = "Returns all categories")
+    @Schema(description = "Vrne kategorijo.")
     @SecurityRequirement(name = "none")
-    @Operation(summary = "Get categories", tags = {"Category"}, description = "Returns all categories.", responses = {
-            @ApiResponse(description = "List of all categories", responseCode = "200", content = @Content(schema = @Schema(implementation =
-                    Kategorija.class)))
+    @Operation(summary = "Vrne kategorijo.", tags = {"kategorije"}, description = "Vrne vse podatke dolocene kategorije.", responses = {
+            @ApiResponse(description = "Podatki o kategoriji.", responseCode = "200", content = @Content(schema = @Schema(implementation =
+                    Kategorija.class))),
+            @ApiResponse(description = "Kategorija ne obstaja!", responseCode = "404")
     })
     @GET
     @Path("{id}")
-    public Response pridobiKategorijo(@PathParam("id") Integer id) {
-        QueryParameters query = QueryParameters.query(uriInfo.getRequestUri().getQuery()).build();
+    public Response pridobiKategorijo(@Parameter(description = "Identifikator kategorije.", required = true) @PathParam("id") Integer id) {
         Kategorija kategorija = kategorijaZrno.pridobiKategorijo(id);
-        Long count = kategorijaZrno.pridobiKategorijeCount(query);
-        return Response.ok(kategorija).header("X-Total-Count", count).build();
+        if (kategorija == null) {
+            return Response.status(Response.Status.NOT_FOUND).build();
+        }
+        return Response.ok(kategorija).build();
     }
 
-    @PermitAll
-    @Schema(description = "Add a category")
+    @Schema(description = "Doda kategorijo.")
     @SecurityRequirement(name = "none")
-    @Operation(summary = "Add a category", tags = {"Category"}, description = "Adds a category.", responses = {
-            @ApiResponse(description = "Add category", responseCode = "201", content = @Content(schema = @Schema(implementation =
-                    Kategorija.class)))
+    @Operation(summary = "Dodajanje kategorije.", tags = {"kategorije"}, description = "Ustvari novo kategorijo s podanimi podatki.", responses = {
+            @ApiResponse(description = "Podatki o kategoriji.", responseCode = "201", content = @Content(
+                    schema = @Schema(implementation = Kategorija.class),
+                    mediaType = "application/json"
+            )),
+            @ApiResponse(responseCode = "400", description = "Uneseni podatki niso pravilni!")
     })
     @POST
-    public Response dodajKategorijo(Kategorija kat) {
-        return Response.status(Response.Status.CREATED).entity(kategorijaZrno.dodajKategorijo(kat)).build();
+    public Response dodajKategorijo(@RequestBody(description = "Objekt kategorije z vsemi pripadajocimi podatki.", required = true, content = @Content(schema = @Schema(implementation = Kategorija.class))) Kategorija kat) {
+        kategorijaZrno.dodajKategorijo(kat);
+        return Response.status(Response.Status.CREATED).build();
     }
 
-    @RolesAllowed({"user","admin"})
-    @Schema(description = "Update a category")
+    @RolesAllowed({"user", "admin"})
+    @Schema(description = "Posodobi kategorijo.")
     @SecurityRequirement(name = "none")
-    @Operation(summary = "Update a category", tags = {"Category"}, description = "Update a category by id.", responses = {
-            @ApiResponse(description = "Update category by id", responseCode = "200", content = @Content(schema = @Schema(implementation =
-                    Kategorija.class)))
+    @Operation(summary = "Posodobitev podatkov kategorije.", tags = {"kategorije"}, description = "Posodobitev podatkov dolocene kategorije", responses = {
+            @ApiResponse(description = "Posodobljena kategorija.", responseCode = "200", content = @Content(mediaType = "application/json", schema = @Schema(implementation = Kategorija.class)))
     })
     @PUT
     @Path("{id}")
-    public Response posodobiKategorijo(@PathParam("id") Integer id, Kategorija kategorija) {
-        return Response.status(Response.Status.CREATED).entity(kategorijaZrno.posodobiKategorijo(id, kategorija)).build();
+    public Response posodobiKategorijo(@RequestBody(description = "Posodobljeni objekt kategorije z vsemi pripadajocimi podatki.", required = true, content = @Content(schema = @Schema(implementation = Kategorija.class))) Kategorija kategorija) {
+        kategorijaZrno.posodobiKategorijo(kategorija);
+        return Response.status(Response.Status.OK).build();
     }
 
     @RolesAllowed("admin")
-    @Schema(description = "Deletes a category")
+    @Schema(description = "Izbrise kategorijo")
     @SecurityRequirement(name = "none")
-    @Operation(summary = "Delete category", tags = {"Category"}, description = "Deletes a category by id.", responses = {
-            @ApiResponse(description = "Delete category", responseCode = "204", content = @Content(schema = @Schema(implementation =
-                    Kategorija.class)))
+    @Operation(summary = "Brisanje kategorije", tags = {"kategorije"}, description = "Iz baze izbrise podatke dolocene kategorije", responses = {
+            @ApiResponse(description = "Kategorija izbrisana", responseCode = "204", content = @Content(mediaType = "text/plain"))
     })
     @DELETE
     @Path("{id}")
-    public Response odstraniKategorijo(@PathParam("id") Integer id) {
-        return Response.status(Response.Status.OK).entity(kategorijaZrno.odstraniKategorijo(id)).build();
+    public Response odstraniKategorijo(@Parameter(description = "Identifikator kategorije.", required = true) @PathParam("id") Integer id) {
+        kategorijaZrno.odstraniKategorijo(id);
+        return Response.status(Response.Status.GONE).build();
     }
 }

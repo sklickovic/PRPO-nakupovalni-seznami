@@ -2,7 +2,9 @@ package si.fri.prpo.nakupovalniseznami.zrno;
 
 import com.kumuluz.ee.rest.beans.QueryParameters;
 import com.kumuluz.ee.rest.utils.JPAUtils;
+import org.eclipse.persistence.internal.identitymaps.WeakIdentityMap;
 import si.fri.prpo.nakupovalniseznami.anotacije.BeleziKlice;
+import si.fri.prpo.nakupovalniseznami.entitete.Uporabnik;
 import si.fri.prpo.nakupovalniseznami.entitete.WishList;
 
 import javax.annotation.PostConstruct;
@@ -11,8 +13,12 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Default;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Root;
 import javax.transaction.Transactional;
 import java.util.List;
+import java.util.UUID;
 import java.util.logging.Logger;
 
 @ApplicationScoped
@@ -20,14 +26,13 @@ import java.util.logging.Logger;
 public class WishListZrno {
 
     @PersistenceContext(unitName = "nakupovalni-seznami-jpa")
-
     private EntityManager em;
-
-    private Logger log = Logger.getLogger(WishListZrno.class.getName());
+    private final static Logger log = Logger.getLogger(WishListZrno.class.getName());
 
     @PostConstruct
     private void init() {
-        log.info("Inicializacija zrna: " + WishListZrno.class.getSimpleName());
+        final String uuid = UUID.randomUUID().toString().replace("-", "");
+        log.info("Inicializacija zrna: " + WishListZrno.class.getSimpleName()+ ", uuid = "+ uuid);
     }
 
     @PreDestroy
@@ -35,16 +40,12 @@ public class WishListZrno {
         log.info("Uničenje zrna: " + WishListZrno.class.getSimpleName());
     }
 
-    @Default
-    public Long pridobiWishListCount(QueryParameters query){
-        Long count = JPAUtils.queryEntitiesCount(em, WishList.class, query);
-        return count;
-    }
-
-    @Default
     public List<WishList> getWishLists() {
-        List<WishList> wishlist = em.createNamedQuery("WishList.getAll").getResultList();
-
+        CriteriaBuilder criteria = em.getCriteriaBuilder();
+        CriteriaQuery<WishList> query = criteria.createQuery(WishList.class);
+        Root<WishList> root = query.from(WishList.class);
+        query.select(root);
+        List<WishList> wishlist = em.createQuery(query).getResultList();
         return wishlist;
     }
 
@@ -54,17 +55,19 @@ public class WishListZrno {
         return wishlist;
     }
 
-    @Transactional
+    @Default
+    public Long pridobiWishListCount(QueryParameters query){
+        Long count = JPAUtils.queryEntitiesCount(em, WishList.class, query);
+        return count;
+    }
+
     public WishList pridobiWishList(int id) {
         WishList w = em.find(WishList.class, id);
         if(w == null){
             log.info("Wish list not found!");
             return null;
-        }else {
-            w.setIdWishListe(w.getIdWishListe());
-            em.merge(w);
-            return w;
         }
+        return w;
     }
 
     @Transactional
@@ -77,30 +80,30 @@ public class WishListZrno {
     }
 
     @Transactional
-    public WishList posodobiWishList(int id, WishList wl) {
-        WishList wl2 = em.find(WishList.class, id);
+    public WishList posodobiWishList(WishList wl) {
+        WishList wl2 = em.find(WishList.class, wl.getIdWishListe());
         if(wl2 == null){
             log.info("Wish list not found!");
-        }else {
-            wl.setIdWishListe(wl2.getIdWishListe());
-            em.merge(wl);
-            log.info("Updating successfully.");
+            return null;
         }
-        return wl;
+        else {
+            wl2.setIzdelkiList(wl.getIzdelkiList());
+            wl2.setUser(wl.getUser());
+            em.merge(wl2);
+            log.info("Updating successfully complete");
+            return wl2;
+        }
     }
 
     @Transactional
-    public int odstraniWishList(int id) {
+    public void odstraniWishList(int id) {
         WishList wl = em.find(WishList.class, id);
-
         if (wl != null) {
             em.remove(wl);
-            log.info("Wish list successfully removed.");
+            log.info("Wish list with id " + id + " successfully deleted.");
         }
         else {
             log.info("Wish list not found!");
         }
-
-        return id;
     }
 }

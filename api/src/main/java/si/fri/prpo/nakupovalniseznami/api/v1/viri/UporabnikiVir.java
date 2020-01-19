@@ -1,16 +1,18 @@
 package si.fri.prpo.nakupovalniseznami.api.v1.viri;
 
 import com.kumuluz.ee.rest.beans.QueryParameters;
-import com.kumuluz.ee.security.annotations.Secure;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.headers.Header;
+import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.parameters.RequestBody;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import si.fri.prpo.nakupovalniseznami.entitete.Uporabnik;
 import si.fri.prpo.nakupovalniseznami.zrno.UporabnikZrno;
 
-import javax.annotation.security.PermitAll;
 import javax.annotation.security.RolesAllowed;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
@@ -21,12 +23,11 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 import java.util.List;
 
-@Secure
 @ApplicationScoped
 @Path("uporabniki")
 @Consumes(MediaType.APPLICATION_JSON)
 @Produces(MediaType.APPLICATION_JSON)
-public class UporabnikiVir{
+public class UporabnikiVir {
 
     @Context
     protected UriInfo uriInfo;
@@ -34,75 +35,84 @@ public class UporabnikiVir{
     @Inject
     private UporabnikZrno uporabnikZrno;
 
-    @PermitAll
-    @Schema(description = "Returns all users")
+    @Schema(description = "Vrne uporabnike.")
     @SecurityRequirement(name = "none")
-    @Operation(summary = "Get customers list", tags = {"customers"}, description = "Returns a list of users.", responses = {
-            @ApiResponse(description = "List of users", responseCode = "200", content = @Content(schema = @Schema(implementation =
-                    Uporabnik.class)))
+    @Operation(summary = "Pridobi listo uporabnikov.", tags = {"uporabniki"}, description = "Vrne listo vseh uporabnikov, ki so shranjeni v bazi.", responses = {
+            @ApiResponse(
+                    description = "Lista vseh uprabnikov.",
+                    responseCode = "200",
+                    content = @Content(
+                            array = @ArraySchema(
+                                    schema = @Schema(implementation = Uporabnik.class)
+                            )),
+                    headers = {
+                            @Header(name = "X-Total-Count", description = "Stevilo uporabnikov.")
+                    }
+            ),
     })
     @GET
     public Response pridobiUporabnike() {
         QueryParameters query = QueryParameters.query(uriInfo.getRequestUri().getQuery()).build();
-        List<Uporabnik> uporabniki = uporabnikZrno.pridobiUporabnike(query);
+        List<Uporabnik> uporabniki = uporabnikZrno.getUporabniki(query);
         Long count = uporabnikZrno.pridobiUporabnikeCount(query);
         return Response.ok(uporabniki).header("X-Total-Count", count).build();
     }
 
-    @PermitAll
-    @Schema(description = "Returns a user")
+    @Schema(description = "Vrne uporabnika.")
     @SecurityRequirement(name = "none")
-    @Operation(summary = "Get a customer", tags = {"customers"}, description = "Returns a user.", responses = {
-            @ApiResponse(description = "User", responseCode = "200", content = @Content(schema = @Schema(implementation =
-                    Uporabnik.class)))
+    @Operation(summary = "Vrne uporabnika.", tags = {"uporabniki"}, description = "Vrne vse podatke dolocenega uporabnika.", responses = {
+            @ApiResponse(description = "Podatki uporabnika.", responseCode = "200", content = @Content(schema = @Schema(implementation =
+                    Uporabnik.class))),
+            @ApiResponse(description = "Uporabnik ne obstaja!", responseCode = "404")
     })
     @GET
     @Path("{id}")
-    public Response pridobiUporabnika(@PathParam("id") Integer id) {
-        QueryParameters query = QueryParameters.query(uriInfo.getRequestUri().getQuery()).build();
+    public Response pridobiUporabnika(@Parameter(description = "Identifikator uporabnika.", required = true) @PathParam("id") Integer id) {
         Uporabnik uporabnik = uporabnikZrno.pridobiUporabnika(id);
-        Long count = uporabnikZrno.pridobiUporabnikeCount(query);
-        return Response.ok(uporabnik).header("X-Total-Count", count).build();
+        if (uporabnik == null) {
+            return Response.status(Response.Status.NOT_FOUND).build();
+        }
+        return Response.ok(uporabnik).build();
     }
 
-    @PermitAll
-    @Schema(description = "Add a user")
+    @Schema(description = "Doda uporabnika.")
     @SecurityRequirement(name = "none")
-    @Operation(summary = "Add user", tags = {"customers"}, description = "Adds a user.", responses = {
-            @ApiResponse(description = "Add user", responseCode = "201", content = @Content(schema = @Schema(implementation =
-                    Uporabnik.class)))
+    @Operation(summary = "Dodajanje uporabnika.", tags = {"uporabniki"}, description = "Ustvari novega uporabnika s podanimi podatki.", responses = {
+            @ApiResponse(description = "Podatki uporabnika.", responseCode = "201", content = @Content(
+                    schema = @Schema(implementation = Uporabnik.class),
+                    mediaType = "application/json"
+            )),
+            @ApiResponse(responseCode = "400", description = "Uneseni podatki niso pravilni!")
     })
     @POST
-    public Response dodajUporabnika(Uporabnik uporabnik) {
-
-        return Response.status(Response.Status.CREATED).entity(uporabnikZrno.dodajUporabnika(uporabnik)).build();
+    public Response dodajUporabnika(@RequestBody(description = "Objekt uporabnika z vsemi pripadajocimi podatki.", required = true, content = @Content(schema = @Schema(implementation = Uporabnik.class))) Uporabnik uporabnik) {
+        uporabnikZrno.dodajUporabnika(uporabnik);
+        return Response.status(Response.Status.CREATED).build();
     }
 
-    @RolesAllowed({"user","admin"})
-    @Schema(description = "Update a user")
+    @RolesAllowed({"user", "admin"})
+    @Schema(description = "Posodobi uporabnika.")
     @SecurityRequirement(name = "none")
-    @Operation(summary = "Update a user", tags = {"customers"}, description = "Update a user by id.", responses = {
-            @ApiResponse(description = "Update a users", responseCode = "200", content = @Content(schema = @Schema(implementation =
-                    Uporabnik.class)))
+    @Operation(summary = "Posodobitev podatkov uporabnika.", tags = {"uporabniki"}, description = "Posodobitev podatkov dolocenega uporabnika", responses = {
+            @ApiResponse(description = "Posodobljen uporabnik.", responseCode = "200", content = @Content(mediaType = "application/json", schema = @Schema(implementation = Uporabnik.class)))
     })
     @PUT
     @Path("{id}")
-    public Response posodobiUporabnika(@PathParam("id") Integer id, Uporabnik uporabnik) {
-
-        return Response.status(Response.Status.CREATED).entity(uporabnikZrno.posodobiUporabnika(id, uporabnik)).build();
+    public Response posodobiUporabnika(@RequestBody(description = "Posodobljeni objekt uporabnika z vsemi pripadajocimi podatki.", required = true, content = @Content(schema = @Schema(implementation = Uporabnik.class))) Uporabnik uporabnik) {
+        uporabnikZrno.posodobiUporabnika(uporabnik);
+        return Response.status(Response.Status.OK).build();
     }
 
     @RolesAllowed("admin")
-    @Schema(description = "Deletes a user")
+    @Schema(description = "Izbrise uporabnika")
     @SecurityRequirement(name = "none")
-    @Operation(summary = "Delete user", tags = {"customers"}, description = "Deletes a user by id.", responses = {
-            @ApiResponse(description = "Delete user", responseCode = "204", content = @Content(schema = @Schema(implementation =
-                    Uporabnik.class)))
+    @Operation(summary = "Brisanje uporabnika", tags = {"uporabniki"}, description = "Iz baze izbrise podatke dolocenega uporabnika", responses = {
+            @ApiResponse(description = "Uporabnik izbrisan", responseCode = "204", content = @Content(mediaType = "text/plain"))
     })
     @DELETE
     @Path("{id}")
-    public Response odstraniUporabnika(@PathParam("id") Integer id) {
-
-        return Response.status(Response.Status.OK).entity(uporabnikZrno.odstraniUporabnika(id)).build();
+    public Response odstraniUporabnika(@Parameter(description = "Identifikator uporabnika.", required = true) @PathParam("id") Integer id) {
+        uporabnikZrno.odstraniUporabnika(id);
+        return Response.status(Response.Status.GONE).build();
     }
 }

@@ -11,9 +11,12 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Default;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-import javax.persistence.Query;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Root;
 import javax.transaction.Transactional;
 import java.util.List;
+import java.util.UUID;
 import java.util.logging.Logger;
 
 @ApplicationScoped
@@ -21,19 +24,33 @@ import java.util.logging.Logger;
 public class UporabnikZrno {
 
     @PersistenceContext(unitName = "nakupovalni-seznami-jpa")
-
     private EntityManager em;
-
-    private Logger log = Logger.getLogger(UporabnikZrno.class.getName());
+    private final static Logger log = Logger.getLogger(UporabnikZrno.class.getName());
 
     @PostConstruct
     private void init() {
-        log.info("Inicializacija zrna: " + UporabnikZrno.class.getSimpleName());
+        final String uuid = UUID.randomUUID().toString().replace("-", "");
+        log.info("Inicializacija zrna: " + UporabnikZrno.class.getSimpleName()+ ", uuid = "+ uuid);
     }
 
     @PreDestroy
     private void destroy() {
         log.info("Uničenje zrna: " + UporabnikZrno.class.getSimpleName());
+    }
+
+    public List<Uporabnik> getUporabniki() {
+        CriteriaBuilder criteria = em.getCriteriaBuilder();
+        CriteriaQuery<Uporabnik> query = criteria.createQuery(Uporabnik.class);
+        Root<Uporabnik> root = query.from(Uporabnik.class);
+        query.select(root);
+        List<Uporabnik> uporabniki = em.createQuery(query).getResultList();
+        return uporabniki;
+    }
+
+    @Default
+    public List<Uporabnik> getUporabniki(QueryParameters query){
+        List<Uporabnik> uporabniki = JPAUtils.queryEntities(em, Uporabnik.class, query);
+        return uporabniki;
     }
 
     @Default
@@ -42,88 +59,54 @@ public class UporabnikZrno {
         return count;
     }
 
-    @Default
-    public List<Uporabnik> pridobiUporabnike(QueryParameters query){
-        List<Uporabnik> uporabniki = JPAUtils.queryEntities(em, Uporabnik.class, query);
-        return uporabniki;
-    }
-
-    @Default
-    public List<Uporabnik> getUporabniki() {
-        Query q = em.createNamedQuery("Uporabnik.getAll");
-        List<Uporabnik> usrs =(List<Uporabnik>)(q.getResultList());
-        return usrs;
-    }
-
-    @Default
-    public List<Uporabnik> getPetras() {
-        List<Uporabnik> petras = em.createNamedQuery("Uporabnik.getPetras").getResultList();
-        return petras;
-    }
-
-    /*public List<Uporabnik> getAllUsersWithCriteria() {
-
-        CriteriaBuilder cb = em.getCriteriaBuilder();
-
-        CriteriaQuery<Uporabnik> q = cb.createQuery(Uporabnik.class);
-        Root<Uporabnik> u = q.from(Uporabnik.class);
-        q.select(u);
-
-        TypedQuery<Uporabnik> query = em.createQuery(q);
-        List<Uporabnik> results = query.getResultList();
-
-        return results;
-    }*/
-
-    @Transactional
     public Uporabnik pridobiUporabnika(int id) {
-        Uporabnik u = em.find(Uporabnik.class, id);
-        if(u == null){
+        Uporabnik uporabnik = em.find(Uporabnik.class, id);
+        if (uporabnik == null){
             log.info("User not found!");
             return null;
-        }else{
-            return u;
-        }
-    }
-
-    @Transactional
-    public Uporabnik dodajUporabnika(Uporabnik u) {
-        if (u != null) {
-            em.persist(u);
-            log.info("User added with id: " + u.getId());
-        }
-
-        return u;
-    }
-
-    @Transactional
-    public Uporabnik posodobiUporabnika(int id, Uporabnik uporabnik) {
-        Uporabnik user = em.find(Uporabnik.class, id);
-        if(user == null){
-            log.info("User not found!");
-        }
-        else {
-            uporabnik.setId(user.getId());
-            em.merge(uporabnik);
-            log.info("Updating successfully.");
         }
         return uporabnik;
     }
 
     @Transactional
-    public int odstraniUporabnika(int id) {
-        Uporabnik user = em.find(Uporabnik.class, id);
+    public Uporabnik dodajUporabnika(Uporabnik uporabnik) {
+        if (uporabnik != null) {
+            em.persist(uporabnik);
+            log.info("User added with id: " + uporabnik.getId());
+        }
+        return uporabnik;
+    }
 
+    @Transactional
+    public Uporabnik posodobiUporabnika(Uporabnik uporabnik) {
+        Uporabnik user = em.find(Uporabnik.class, uporabnik.getId());
+        if(user == null){
+            log.info("User not found!");
+            return null;
+        }
+        else {
+            user.setIme(uporabnik.getIme());
+            user.setPriimek(uporabnik.getPriimek());
+            user.setEmail(uporabnik.getEmail());
+            user.setNaslov(uporabnik.getNaslov());
+            user.setUporabniskoIme(uporabnik.getUporabniskoIme());
+            user.setPassword(uporabnik.getPassword());
+            user.setWishLists(uporabnik.getWishLists());
+            em.merge(user);
+            log.info("Updating successfully complete.");
+            return user;
+        }
+    }
+
+    @Transactional
+    public void odstraniUporabnika(int id) {
+        Uporabnik user = em.find(Uporabnik.class, id);
         if (user != null) {
             em.remove(user);
             log.info("User with id " + id + " successfully deleted.");
         }
         else {
-            log.warning("User not found!");
+            log.info("User not found!");
         }
-
-        return id;
     }
-
-
 }

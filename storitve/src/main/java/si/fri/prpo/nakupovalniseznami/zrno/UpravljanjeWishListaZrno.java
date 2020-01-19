@@ -49,8 +49,8 @@ public class UpravljanjeWishListaZrno {
         }
 
         WishList list = new WishList();
-        list.setUporabnik(u);
-        list.setList(wl.getIzdelki());
+        list.setUser(u);
+        list.setIzdelkiList(wl.getIzdelki());
         log.info("Wish list has been successfully created.");
         return wishListZrno.dodajWishList(list);
     }
@@ -70,8 +70,8 @@ public class UpravljanjeWishListaZrno {
             }
         }
 
-        w_l.setList(izdelki);
-        return wishListZrno.posodobiWishList(wl.getId(), w_l);
+        w_l.setIzdelkiList(izdelki);
+        return wishListZrno.posodobiWishList(w_l);
     }
 
     public WishList sortByExpensive(WishListDTO wl) {
@@ -89,7 +89,7 @@ public class UpravljanjeWishListaZrno {
             }
         }
 
-        w_l.setList(izdelki);
-        return wishListZrno.posodobiWishList(wl.getId(), w_l);
+        w_l.setIzdelkiList(izdelki);
+        return wishListZrno.posodobiWishList(w_l);
     }
 }

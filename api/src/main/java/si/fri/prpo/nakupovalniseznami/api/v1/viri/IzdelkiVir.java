@@ -2,16 +2,18 @@ package si.fri.prpo.nakupovalniseznami.api.v1.viri;
 
 import com.kumuluz.ee.rest.beans.QueryParameters;
 import com.kumuluz.ee.rest.utils.QueryStringDefaults;
-import com.kumuluz.ee.security.annotations.Secure;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.headers.Header;
+import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.parameters.RequestBody;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import si.fri.prpo.nakupovalniseznami.entitete.Izdelki;
 import si.fri.prpo.nakupovalniseznami.zrno.IzdelkiZrno;
 
-import javax.annotation.security.PermitAll;
 import javax.annotation.security.RolesAllowed;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Default;
@@ -23,7 +25,6 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 import java.util.List;
 
-@Secure
 @ApplicationScoped
 @Path("izdelki")
 @Consumes(MediaType.APPLICATION_JSON)
@@ -39,75 +40,86 @@ public class IzdelkiVir {
     @Default
     private QueryStringDefaults qsd;
 
-    @PermitAll
-    @Schema(description = "Returns all articles")
+    @Schema(description = "Vrne izdelke.")
     @SecurityRequirement(name = "none")
-    @Operation(summary = "Get articles list", tags = {"article"}, description = "Returns a list of articles.", responses = {
-            @ApiResponse(description = "List of articles", responseCode = "200", content = @Content(schema = @Schema(implementation =
-                    Izdelki.class)))
+    @Operation(summary = "Pridobi listo izdelkov.", tags = {"izdelki"}, description = "Vrne listo vseh izdelkov, ki so shranjeni v bazi.", responses = {
+            @ApiResponse(
+                    description = "Lista vseh izdelkov.",
+                    responseCode = "200",
+                    content = @Content(
+                            array = @ArraySchema(
+                                    schema = @Schema(implementation = Izdelki.class)
+                            )),
+                    headers = {
+                            @Header(name = "X-Total-Count", description = "Stevilo izdelkov.")
+                    }
+            ),
     })
     @GET
     public Response vrniIzdelke(){
         QueryParameters query = QueryParameters.query(uriInfo.getRequestUri().getQuery()).build();
-        List<Izdelki> artikli = izdelkiZrno.getArtikli(query);
+        List<Izdelki> izdelki = izdelkiZrno.getIzdelki(query);
         Long count = izdelkiZrno.pridobiIzdelkeCount(query);
-        return Response.ok(artikli).header("X-Total-Count", count).build();
+        return Response.ok(izdelki).header("X-Total-Count", count).build();
     }
 
 
-    @PermitAll
-    @Schema(description = "Returns a articel by id")
+    @Schema(description = "Vrne izdelek.")
     @SecurityRequirement(name = "none")
-    @Operation(summary = "Get articles list", tags = {"article"}, description = "Returns a list of articles.", responses = {
-            @ApiResponse(description = "List of articles", responseCode = "200", content = @Content(schema = @Schema(implementation =
-                    Izdelki.class)))
+    @Operation(summary = "Vrne izdelek.", tags = {"izdelki"}, description = "Vrne vse podatke dolocenega izdelka.", responses = {
+            @ApiResponse(description = "Podatki o izdelku.", responseCode = "200", content = @Content(schema = @Schema(implementation =
+                    Izdelki.class))),
+            @ApiResponse(description = "Izdelek ne obstaja!", responseCode = "404")
     })
     @GET
     @Path("{id}")
-    public Response pridobiIzdelek(@PathParam("id") Integer id) {
-        QueryParameters query = QueryParameters.query(uriInfo.getRequestUri().getQuery()).build();
-        Izdelki izdelek = (Izdelki) izdelkiZrno.pridobiIzdelek(id);
-        Long count = izdelkiZrno.pridobiIzdelkeCount(query);
-        return Response.ok(izdelek).header("X-Total-Count", count).build();
+    public Response pridobiIzdelek(@Parameter(description = "Identifikator izdelka.", required = true) @PathParam("id") Integer id) {
+        Izdelki izdelek = izdelkiZrno.pridobiIzdelek(id);
+        if (izdelek == null) {
+            return Response.status(Response.Status.NOT_FOUND).build();
+        }
+        return Response.ok(izdelek).build();
     }
 
 
-    @PermitAll
-    @Schema(description = "Add a articles")
+    @Schema(description = "Doda izdelek.")
     @SecurityRequirement(name = "none")
-    @Operation(summary = "Add article", tags = {"article"}, description = "Adds an article.", responses = {
-            @ApiResponse(description = "Add article", responseCode = "201", content = @Content(schema = @Schema(implementation =
-                    Izdelki.class)))
+    @Operation(summary = "Dodajanje izdelka.", tags = {"izdelki"}, description = "Ustvari nov izdelek s podanimi podatki.", responses = {
+            @ApiResponse(description = "Podatki o izdelku.", responseCode = "201", content = @Content(
+                    schema = @Schema(implementation = Izdelki.class),
+                    mediaType = "application/json"
+            )),
+            @ApiResponse(responseCode = "400", description = "Uneseni podatki niso pravilni!")
     })
     @POST
-    public Response dodajIzdelek(Izdelki izdelek) {
-        return Response.status(Response.Status.CREATED).entity(izdelkiZrno.dodajIzdelek(izdelek)).build();
+    public Response dodajIzdelek(@RequestBody(description = "Objekt izdelka z vsemi pripadajocimi podatki.", required = true, content = @Content(schema = @Schema(implementation = Izdelki.class))) Izdelki izdelek) {
+        izdelkiZrno.dodajIzdelek(izdelek);
+        return Response.status(Response.Status.CREATED).build();
     }
 
-    @RolesAllowed({"user","admin"})
-    @Schema(description = "Update an article")
+    @RolesAllowed({"user", "admin"})
+    @Schema(description = "Posodobi izdelek.")
     @SecurityRequirement(name = "none")
-    @Operation(summary = "Update an article", tags = {"article"}, description = "Update an article by id.", responses = {
-            @ApiResponse(description = "Update an article", responseCode = "200", content = @Content(schema = @Schema(implementation =
-                    Izdelki.class)))
+    @Operation(summary = "Posodobitev podatkov izdelka.", tags = {"izdelki"}, description = "Posodobitev podatkov dolocenega izdelka", responses = {
+            @ApiResponse(description = "Posodobljen izdelek.", responseCode = "200", content = @Content(mediaType = "application/json", schema = @Schema(implementation = Izdelki.class)))
     })
     @PUT
     @Path("{id}")
-    public Response posodobiIzdelek(@PathParam("id") Integer id, Izdelki izdelek) {
-        return Response.status(Response.Status.CREATED).entity(izdelkiZrno.posodobiIzdelek(id, izdelek)).build();
+    public Response posodobiIzdelek(@RequestBody(description = "Posodobljeni objekt izdelka z vsemi pripadajocimi podatki.", required = true, content = @Content(schema = @Schema(implementation = Izdelki.class))) Izdelki izdelek) {
+        izdelkiZrno.posodobiIzdelek(izdelek);
+        return Response.status(Response.Status.OK).build();
     }
 
-
     @RolesAllowed("admin")
-    @Schema(description = "Deletes an article")
+    @Schema(description = "Izbrise izdelek")
     @SecurityRequirement(name = "none")
-    @Operation(summary = "Delete article", tags = {"article"}, description = "Deletes an article by id.", responses = {
-            @ApiResponse(description = "Delete article", responseCode = "204", content = @Content(schema = @Schema(implementation =
-                    Izdelki.class)))
+    @Operation(summary = "Brisanje izdelka", tags = {"izdelki"}, description = "Iz baze izbrise podatke dolocenega izdelka", responses = {
+            @ApiResponse(description = "Izdelek izbrisan", responseCode = "204", content = @Content(schema = @Schema(implementation = Izdelki.class)))
     })
     @DELETE
     @Path("{id}")
-    public Response odstraniIzdelek(@PathParam("id") Integer id) {
-        return Response.status(Response.Status.OK).entity(izdelkiZrno.odstraniIzdelek(id)).build();
+    public Response odstraniIzdelek(@Parameter(description = "Identifikator izdelka.", required = true) @PathParam("id") Integer id) {
+        izdelkiZrno.odstraniIzdelek(id);
+        return Response.status(Response.Status.GONE).build();
     }
 }
