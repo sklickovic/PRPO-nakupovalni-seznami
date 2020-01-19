@@ -7,25 +7,33 @@ import si.fri.prpo.nakupovalniseznami.entitete.WishList;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
-import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import java.util.Collections;
 import java.util.List;
+import java.util.UUID;
 import java.util.logging.Logger;
 
-@ApplicationScoped
+@RequestScoped
 public class UpravljanjeWishListaZrno {
 
-    private Logger log = Logger.getLogger(UpravljanjeWishListaZrno.class.getName());
+    @Inject
+    private WishListZrno wishListZrno;
+    @Inject
+    private UporabnikZrno uporabnikZrno;
+    @Inject
+    private IzdelkiZrno izdelkiZrno;
 
     @PersistenceContext(unitName = "nakupovalni-seznami-jpa")
     private EntityManager em;
+    private final static Logger log = Logger.getLogger(UpravljanjeWishListaZrno.class.getName());
 
     @PostConstruct
     private void init() {
-        log.info("Inicializcaija zrna: " + UpravljanjeWishListaZrno.class.getSimpleName());
+        final String uuid = UUID.randomUUID().toString().replace("-", "");
+        log.info("Inicializacija zrna: " + UpravljanjeWishListaZrno.class.getSimpleName()+ ", uuid = "+ uuid);;
     }
 
     @PreDestroy
@@ -33,31 +41,24 @@ public class UpravljanjeWishListaZrno {
         log.info("Uničenje zrna: " + UpravljanjeWishListaZrno.class.getSimpleName());
     }
 
-    @Inject
-    private WishListZrno wishListZrno;
-    @Inject
-    private UporabnikZrno uporabnikZrno;
-
 
     public WishList createWishList(WishListDTO wl) {
-
-        Uporabnik u = uporabnikZrno.pridobiUporabnika(wl.getUporabnikId());
+        Uporabnik u = uporabnikZrno.pridobiUporabnika(wl.getIdWishListe());
 
         if (u == null) {
-            log.info("Uporabnik ne obstaja!");
+            log.info("Uporabnik ne obstaja! Nakupovalni seznam ne bo dodan!");
             return null;
         }
-
         WishList list = new WishList();
         list.setUser(u);
-        list.setIzdelkiList(wl.getIzdelki());
+        list.setIzdelkiList(wl.getIzdelkiList());
         log.info("Wish list has been successfully created.");
         return wishListZrno.dodajWishList(list);
     }
 
     public WishList sortByCheapest(WishListDTO wl) {
-        WishList w_l = wishListZrno.pridobiWishList(wl.getId());
-        List<Izdelki> izdelki = wl.getIzdelki();
+        WishList w_l = wishListZrno.pridobiWishList(wl.getIdWishListe());
+        List<Izdelki> izdelki = wl.getIzdelkiList();
 
         for (int i = 0; i < izdelki.size() - 1; i++) {
             for (int j = 0; j < izdelki.size() - i - 1; j++) {
@@ -75,8 +76,8 @@ public class UpravljanjeWishListaZrno {
     }
 
     public WishList sortByExpensive(WishListDTO wl) {
-        WishList w_l = wishListZrno.pridobiWishList(wl.getId());
-        List<Izdelki> izdelki = wl.getIzdelki();
+        WishList w_l = wishListZrno.pridobiWishList(wl.getIdWishListe());
+        List<Izdelki> izdelki = wl.getIzdelkiList();
 
         for (int i = 0; i < izdelki.size() - 1; i++) {
             for (int j = 0; j < izdelki.size() - i - 1; j++) {

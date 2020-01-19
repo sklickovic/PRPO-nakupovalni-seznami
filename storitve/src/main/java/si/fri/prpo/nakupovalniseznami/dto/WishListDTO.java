@@ -1,37 +1,36 @@
 package si.fri.prpo.nakupovalniseznami.dto;
 
 import si.fri.prpo.nakupovalniseznami.entitete.Izdelki;
+import si.fri.prpo.nakupovalniseznami.entitete.Uporabnik;
 
 import java.util.List;
 
 public class WishListDTO {
+    private Integer idWishListe;
+    private List<Izdelki> izdelkiList;
+    private Uporabnik user;
 
-    public int uporabnikId;
-
-    public int id;
-    List<Izdelki> seznamIzdelkov;
-
-    public int getId() {
-        return id;
+    public Integer getIdWishListe() {
+        return idWishListe;
     }
 
-    public void setId(int id) {
-        this.id = id;
+    public void setIdWishListe(Integer idWishListe) {
+        this.idWishListe = idWishListe;
     }
 
-    public List<Izdelki> getIzdelki() {
-        return seznamIzdelkov;
+    public List<Izdelki> getIzdelkiList() {
+        return izdelkiList;
     }
 
-    public void setIzdelki(List<Izdelki> seznam) {
-        this.seznamIzdelkov = seznam;
+    public void setIzdelkiList(List<Izdelki> izdelkiList) {
+        this.izdelkiList = izdelkiList;
     }
 
-    public int getUporabnikId() {
-        return uporabnikId;
+    public Uporabnik getUser() {
+        return user;
     }
 
-    public void setUporabnikId(int id) {
-        this.uporabnikId = id;
+    public void setUser(Uporabnik user) {
+        this.user = user;
     }
 }
