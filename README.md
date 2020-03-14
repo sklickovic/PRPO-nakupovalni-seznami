@@ -93,3 +93,28 @@
 | **Opis aktivnosti** | Vodja projekta nadzire razvojno ekipe in jim pomaga da uspešno razvijejo končni izdelek. |
 | **Morebitne odvisnosti in omejitve** | / |
 | **Pričakovani rezultati aktivnosti** | Uspešno realiziran projekt |
+
+
+
+| Oznaka izdelka | Ime izdelka | Datum izdaje |
+| :--- | :---------------------------- | :--- |
+| **TO-DO** | **TO-DO** | **TO-DO** |
+| A1      | Specifikacija zahtev       | 27.3.2020 |
+| A2      | Porazdelitev članov po vlogah | 3.4.2020 |
+| B3      | Sistemska arhitektura | 10.4.2020 |
+| B4      | Podatkovni model | 10.4.2020 |
+| B5      | Podatkovna shema za MySQL podatkovno bazo | 10.4.2020 |
+| B6      | Podatkovna shema za MongoDB bazo | 10.4.2020 |
+| B7      | Grafični uporabniški vmesnik v formatu UI/UX orodja | 17.4.2020 |
+| B8      | Načrt arhitekture aplikacije in zaledni del aplikacije | 17.4.2020 |
+| B9      | Opis vmesnikov | 17.4.2020 |
+| B10     | Načrt testiranja | 17.4.2020 |
+| C11     | Grafički uporabniški vmesnik v formatu XML | 30.4.2020 |
+| C12     | Relacijska baza in API | 30.4.2020 |
+| C13     | Implementirana NoSQL baza in API | 30.4.2020 |
+| C14     | Delujuči programski moduli za povezovanje z API-ji banke | 8.5.2020 |
+| C15     | Implementiran zaledni sistem | 20.5.2020 |
+| C16     | Testiranje in delojuča aplikacija | 22.5.2020 |
+| C17     | Pisanje dokumentacije | 22.5.2020 |
+| C18     | Upravljanje projekta | 22.5.2020 |
+
